@@ -1,0 +1,596 @@
+openapi: 3.0.0
+info:
+  title: Cloud Native Admin Service
+  description: Admin service that support customer, product, inventory, invoice and levelup services with cloud native architecture
+  version: 0.0.1
+servers: 
+  - url: 'http://localhost:9999'
+    description: config server
+  - url: 'http://localhost:8761'
+    description: Eureka server
+  - url: 'http://localhost:8282'
+    description: admin API service
+  - url: 'http://localhost:7005'
+    description: customer service
+  - url: 'http://localhost:7004'
+    description: product service
+  - url: 'http://localhost:7003'
+    description: inventory service
+  - url: 'http://localhost:7002'
+    description: invoice service
+  - url: 'http://localhost:7001'
+    description: level up service
+
+# Basic CRUD Admin API
+paths:
+  /invoices:
+    post:
+      summary: Creates a new invoice.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Invoice'
+      responses:
+        '201':
+          description: A invoice object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete invoice information. Some required fields missing.
+          
+    get:
+      summary: Retrieves all invoice entries.
+      responses:
+        '200':
+          description: A list of all invoice entries.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Invoice'
+  /invoices/{invoiceId}:
+    get:
+      summary: Retrieves the entry for the invoice by ID.
+      parameters:
+        - name: invoiceId
+          in: path
+          required: true
+          description: ID of the invoice you would like to retrieve.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: Invoice object matching given ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '404':
+          description: Invoice with given ID not found.
+    put:
+      summary: Updates the invoice by ID.
+      parameters:
+        - name: invoiceId
+          in: path
+          required: true
+          description: ID of the invoice you would like to update.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Invoice'
+      responses:
+        '200':
+          description: invoice successfully updated.
+        '404':
+          description: invoice with given ID not found.
+        '422':
+          description: invoice ID on path must match the ID in the invoice object.
+    delete:
+      summary: Deletes the invoice by ID.
+      parameters: 
+        - name: invoiceId
+          in: path
+          required: true
+          description: ID of the invoice you would like to delete.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: invoice successfully deleted.
+        '404':
+          description: invoice with given ID not found.
+          
+  /inventory:
+    post:
+      summary: Creates a new inventory.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Inventory'
+      responses:
+        '201':
+          description: An inventory object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inventory'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete Inventory information. Some required fields missing.
+    get:
+      summary: Retrieves all inventory entries.
+      responses:
+        '200':
+          description: A list of all inventory entries.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Inventory'
+  /inventory/{inventoryId}:
+    get:
+      summary: Retrieves the entry for the inventory by ID.
+      parameters:
+        - name: inventoryId
+          in: path
+          required: true
+          description: ID of the inventory you would like to retrieve.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: Inventory object matching given ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inventory'
+        '404':
+          description: Inventory with given ID not found.
+    put:
+      summary: Updates the inventory by ID.
+      parameters:
+        - name: inventoryId
+          in: path
+          required: true
+          description: ID of the inventory you would like to update.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Inventory'
+      responses:
+        '200':
+          description: inventory successfully updated.
+        '404':
+          description: inventory with given ID not found.
+        '422':
+          description: inventory ID on path must match the ID in the inventory object.
+    delete:
+      summary: Deletes the inventory by ID.
+      parameters: 
+        - name: inventoryId
+          in: path
+          required: true
+          description: ID of the inventory you would like to delete.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: inventory successfully deleted.
+        '404':
+          description: inventory with given ID not found.
+          
+  /products:
+    post:
+      summary: Creates a new product.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          description: A product object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete product information. Some required fields missing.
+    get:
+      summary: Retrieves all product entries.
+      responses:
+        '200':
+          description: A list of all product entries.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+  /products/{productId}:
+    get:
+      summary: Retrieves the entry for the product by ID.
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID of the product you would like to retrieve.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: Product object matching given ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product with given ID not found.
+    put:
+      summary: Updates the product by ID.
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID of the product you would like to update.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: product successfully updated.
+        '404':
+          description: product with given ID not found.
+        '422':
+          description: product ID on path must match the ID in the invoice object.
+    delete:
+      summary: Deletes the product by ID.
+      parameters: 
+        - name: productId
+          in: path
+          required: true
+          description: ID of the product you would like to delete.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: product successfully deleted.
+        '404':
+          description: product with given ID not found. 
+          
+  /customers:
+    post:
+      summary: Creates a new customer.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '201':
+          description: A customer object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete customer information. Some required fields missing.
+    get:
+      summary: Retrieves all customer entries.
+      responses:
+        '200':
+          description: A list of all customer entries.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+  /customers/{customerId}:
+    get:
+      summary: Retrieves the entry for the customer by ID.
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: ID of the customer you would like to retrieve.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: Customer object matching given ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '404':
+          description: Customer with given ID not found.
+    put:
+      summary: Updates the customer by ID.
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: ID of the customer you would like to update.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '200':
+          description: customer successfully updated.
+        '404':
+          description: customer with given ID not found.
+        '422':
+          description: customer ID on path must match the ID in the customer object.
+    delete:
+      summary: Deletes the customer by ID.
+      parameters: 
+        - name: customerId
+          in: path
+          required: true
+          description: ID of the customer you would like to delete.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: customer successfully deleted.
+        '404':
+          description: customer with given ID not found. 
+          
+  /levelup:
+    post:
+      summary: Creates a new level up object.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LevelUp'
+      responses:
+        '201':
+          description: A Level Up object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LevelUp'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete level up information. Some required fields missing.
+    get:
+      summary: Retrieves all level up entries.
+      responses:
+        '200':
+          description: A list of all level up entries.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LevelUp'
+                  
+  /levelup/{levelUpId}:
+    get:
+      summary: Retrieves the entry for the level up by ID.
+      parameters:
+        - name: levelUpId
+          in: path
+          required: true
+          description: ID of the level up entry you would like to retrieve.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: Level up object matching given ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LevelUp'
+        '404':
+          description: Level up object with given ID not found.
+    put:
+      summary: Updates the level up object by ID.
+      parameters:
+        - name: levelUpId
+          in: path
+          required: true
+          description: ID of the level up object you would like to update.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LevelUp'
+      responses:
+        '200':
+          description: level up object successfully updated.
+        '404':
+          description: level up object with given ID not found.
+        '422':
+          description: level up ID on path must match the ID in the level up object.
+    delete:
+      summary: Deletes the level up object by ID.
+      parameters: 
+        - name: levelUpId
+          in: path
+          required: true
+          description: ID of the level up object you would like to delete.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: level up object successfully deleted.
+        '404':
+          description: level up object with given ID not found. 
+          
+components:
+  schemas:
+    Invoice:
+      properties:
+        invoiceId:
+          type: integer
+        customerId:
+          type: integer
+        purchaseDate:
+          type: number
+        invoiceItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceItem'
+      required:
+        - customerId
+        - purchaseDate
+        - invoiceItems
+    InvoiceItem:
+      properties:
+        invoiceItemId:
+          type: integer
+        invoiceId:
+          type: integer
+        inventoryId:
+          type: integer 
+        quantity:
+          type: integer    
+        unitPrice:
+          type: number   
+      required:
+        - invoiceId
+        - inventoryId
+        - quantity
+        - unitPrice
+    Product:
+      properties:
+        productId:
+          type: integer
+        productName:
+          type: string
+        productDescription:
+          type: string
+        listPrice:
+          type: number
+        unitCost:
+          type: number
+      required:
+        - productName
+        - productDescription
+        - listPrice
+        - unitCost
+    LevelUp:
+      properties:
+        levelUpId:
+          type: integer
+        customerId:
+          type: integer
+        points:
+          type: integer
+        memberDate:
+          type: number
+      required:
+        - customerId
+        - points
+        - memberDate
+    Customer:
+      properties:
+        customerId:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        street:
+          type: string
+        city:
+          type: string
+        zipcode:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+      required:
+        - firstName
+        - lastName
+        - street
+        - city
+        - zipcode
+        - email
+        - phone
+    Inventory:
+      properties:
+        inventoryId:
+          type: integer
+        productId:
+          type: integer
+        quantity:
+          type: integer
+      required:
+        - productId
+        - quantity
+        
