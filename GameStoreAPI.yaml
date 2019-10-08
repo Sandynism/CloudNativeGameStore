@@ -1,0 +1,319 @@
+openapi: 3.0.0
+info:
+  title: Cloud Native Game Store
+  description: Game Store Service that support clients with cloud native architecture
+  version: 0.0.1
+servers: 
+  - url: 'http://localhost:9999'
+    description: config server
+  - url: 'http://localhost:8761'
+    description: Eureka server
+  - url: 'http://localhost:8282'
+    description: admin API service
+  - url: 'http://localhost:8181'
+    description: retail API service
+  - url: 'http://localhost:7005'
+    description: customer service
+  - url: 'http://localhost:7004'
+    description: product service
+  - url: 'http://localhost:7003'
+    description: inventory service
+  - url: 'http://localhost:7002'
+    description: invoice service
+  - url: 'http://localhost:7001'
+    description: level up service
+    
+
+# Basic CRUD Retail API
+paths:
+  /invoices:
+    post:
+      summary: Creates a new Invoice.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Invoice'
+      responses:
+        '201':
+          description: A Invoice object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete Invoice information. Some required fields missing.
+          
+    get:
+      summary: Retrieves all Invoice entries.
+      responses:
+        '200':
+          description: A list of all Invoice entries.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Invoice'
+  /invoices/{invoiceId}:
+    get:
+      summary: Retrieves the entry for the Invoice by ID.
+      parameters:
+        - name: invoiceId
+          in: path
+          required: true
+          description: ID of the Invoice you would like to retrieve.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: Invoice object matching given ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '404':
+          description: Invoice with given ID not found.
+          
+  /invoices/customer/{customerId}:
+    get:
+      summary: Retrieves the entry for the Invoice by Customer ID.
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: customer ID of the Invoice you would like to retrieve.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: Invoice object matching given ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '404':
+          description: customer ID not found.  
+  /products:
+   get:
+      summary: Retrieves all product entries.
+      responses:
+        '200':
+          description: A list of all product entries.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+ 
+ # post product method for admin API
+   post:
+      summary: Creates a new product.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          description: A product object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete product information. Some required fields missing.                 
+  
+  ######
+  
+  /products/inventory:
+    get:
+      summary: Retrieves all the products in the inventory
+      responses:
+        '200':
+          description: product objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+          
+  /products/{productId}:
+    get:
+      summary: Retrieves the product by ID.
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: ID of the product you would like to retrieve.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: product object matching given ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: product with given ID not found.
+          
+    put:
+      summary: Updates the entry for the product by ID.
+      parameters: 
+        - name: productId
+          in: path
+          required: true
+          description: ID of the product you would like to update.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: product successfully updated.
+        '404':
+          description: product with given ID not found.
+        '422':
+          description: product ID on path must match the ID in the product object.
+          
+    delete:
+      summary: Deletes the product by ID.
+      parameters: 
+        - name: productId
+          in: path
+          required: true
+          description: ID of the product you would like to delete.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: product successfully deleted.
+        '404':
+          description: product with given ID not found.
+          
+  /products/invoice/{invoiceId}:
+    get:
+      summary: Retrieves the product by invoice ID.
+      parameters:
+        - name: invoiceId
+          in: path
+          required: true
+          description: invoice ID of the product you would like to retrieve.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: product object matching given ID.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product' 
+  
+  /levelup/customer/{customerId}:
+    get:
+      summary: Retrieves the levelup points by Customer ID.
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: customer ID of the levelup points you would like to retrieve.
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '200':
+          description: levelup object matching given ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LevelUp'
+        '404':
+          description: customer ID not found.          
+    
+components:
+  schemas:
+    Invoice:
+      properties:
+        invoiceId:
+          type: integer
+        customerId:
+          type: integer
+        purchaseDate:
+          type: number
+        invoiceItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceItem'
+      required:
+        - customerId
+        - purchaseDate
+        - invoiceItems
+    InvoiceItem:
+      properties:
+        invoiceItemId:
+          type: integer
+        invoiceId:
+          type: integer
+        inventoryId:
+          type: integer 
+        quantity:
+          type: integer    
+        unitPrice:
+          type: number   
+    Product:
+      properties:
+        productId:
+          type: integer
+        productName:
+          type: string
+        productDescription:
+          type: string
+        listPrice:
+          type: number
+        unitCost:
+          type: number
+      required:
+        - productName
+        - productDescription
+        - listPrice
+        - unitCost
+    LevelUp:
+      properties:
+        levelUpId:
+          type: integer
+        customerId:
+          type: integer
+        points:
+          type: integer
+        memeberDate:
+          type: number
+        
+  
