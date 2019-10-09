@@ -34,6 +34,7 @@ public class ServiceLayerTest {
     @Before
     public void setUp() throws Exception {
         setUpCustomerDaoMock();
+
         sl = new ServiceLayer(cd);
     }
 
