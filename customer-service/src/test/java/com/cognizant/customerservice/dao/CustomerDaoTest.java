@@ -19,6 +19,12 @@ public class CustomerDaoTest {
     @Autowired
     CustomerDao cd;
 
+    private static final Integer C_ID = 1;
+    private static final Customer C_INPUT1 = new Customer("Armin", "Van Buuren", "Trance", "Leiden", "2300-2334", "StateOfTrance@gmail.com", "123456789");
+    private static final Customer C_OUTPUT1 = new Customer(1, "Armin", "Van Buuren", "Trance", "Leiden", "2300-2334", "StateOfTrance@gmail.com", "123456789");
+    private static final Customer C_INPUT2 = new Customer( "Jai", "Wolf", "Broadway", "New York", "11001", "jaiwolf@gmail.com", "456789123");
+    private static final Customer C_OUTPUT2 = new Customer(2, "Jai", "Wolf", "Broadway", "New York", "11001", "jaiwolf@gmail.com", "456789123");
+
     @Before
     public void setUp() throws Exception {
         List<Customer> customerList = cd.getAllCustomers();
@@ -27,16 +33,8 @@ public class CustomerDaoTest {
 
     @Test
     public void createGetDeleteCustomer() {
-        Customer customer = new Customer();
-        customer.setFirstName("Armin");
-        customer.setLastName("Van Buuren");
-        customer.setStreet("Trance");
-        customer.setCity("Leiden");
-        customer.setZip("2300-2334");
-        customer.setEmail("StateOfTrance@gmail.com");
-        customer.setPhone("123456789");
 
-        customer = cd.createCustomer(customer);
+        Customer customer = cd.createCustomer(C_INPUT1);
 
         Customer customer2 = cd.getCustomer(customer.getCustomerId());
 
@@ -51,16 +49,7 @@ public class CustomerDaoTest {
 
     @Test
     public void updateCustomer() {
-        Customer customer = new Customer();
-        customer.setFirstName("Armin");
-        customer.setLastName("Van Buuren");
-        customer.setStreet("Trance");
-        customer.setCity("Leiden");
-        customer.setZip("2300-2334");
-        customer.setEmail("StateOfTrance@gmail.com");
-        customer.setPhone("123456789");
-
-        cd.createCustomer(customer);
+        Customer customer = cd.createCustomer(C_INPUT1);
 
         customer.setStreet("Trance Street");
 
@@ -74,27 +63,8 @@ public class CustomerDaoTest {
 
     @Test
     public void getAllCustomers() {
-        Customer customer = new Customer();
-        customer.setFirstName("Armin");
-        customer.setLastName("Van Buuren");
-        customer.setStreet("Trance");
-        customer.setCity("Leiden");
-        customer.setZip("2300-2334");
-        customer.setEmail("StateOfTrance@gmail.com");
-        customer.setPhone("123456789");
-
-        cd.createCustomer(customer);
-
-        Customer customer2 = new Customer();
-        customer2.setFirstName("Nick");
-        customer2.setLastName("Miller");
-        customer2.setStreet("10th St");
-        customer2.setCity("Denver");
-        customer2.setZip("11900");
-        customer2.setEmail("illenium@gmail.com");
-        customer2.setPhone("987654321");
-
-        cd.createCustomer(customer2);
+        Customer customer1 = cd.createCustomer(C_INPUT1);
+        Customer customer2 = cd.createCustomer(C_INPUT2);
 
         List<Customer> customerList = cd.getAllCustomers();
         assertEquals(customerList.size(), 2);
