@@ -35,37 +35,37 @@ public class LevelUpController {
         return levelUps;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{levelUpId}")
     @ResponseStatus(HttpStatus.OK)
-    public LevelUpViewModel getLevelUp(@PathVariable("id") int id) {
+    public LevelUpViewModel getLevelUp(@PathVariable("levelUpId") int levelUpId) {
 
-        LevelUpViewModel levelUpViewModel = serviceLayer.findLevelUp(id);
+        LevelUpViewModel levelUpViewModel = serviceLayer.findLevelUp(levelUpId);
 
         if (levelUpViewModel == null)
 
-            throw new NotFoundException("Sorry! we don't have this Level up id no. " + id);
+            throw new NotFoundException("Sorry! we don't have this Level up id no. " + levelUpId);
         return levelUpViewModel;
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{levelUpId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteLevelUp(@PathVariable("id") int id) {
+    public void deleteLevelUp(@PathVariable("levelUpId") int levelUpId) {
 
-        serviceLayer.removeLevelUp(id);
+        serviceLayer.removeLevelUp(levelUpId);
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping("/{levelUpId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateLevelUp(@PathVariable("id") int id, @RequestBody @Valid LevelUpViewModel levelUpViewModel) {
+    public void updateLevelUp(@PathVariable("levelUpId") int levelUpId, @RequestBody @Valid LevelUpViewModel levelUpViewModel) {
 
         if (levelUpViewModel.getLevelUpId() == 0)
-            levelUpViewModel.setLevelUpId(id);
+            levelUpViewModel.setLevelUpId(levelUpId);
 
-        if (id != levelUpViewModel.getLevelUpId()) {
+        if (levelUpId != levelUpViewModel.getLevelUpId()) {
 
-            throw new IllegalArgumentException("Sorry! we don't have level up ID no. " + id);
+            throw new IllegalArgumentException("Sorry! we don't have level up ID no. " + levelUpId);
         }
 
         serviceLayer.updateLevelUp(levelUpViewModel);
