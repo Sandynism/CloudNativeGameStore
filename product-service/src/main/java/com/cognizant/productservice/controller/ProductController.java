@@ -50,6 +50,8 @@ public class ProductController {
         sl.deleteProduct(productId);
     }
 
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<ProductViewModel> getAllProducts() {
         List<ProductViewModel> productList = sl.getAllProducts();
 
