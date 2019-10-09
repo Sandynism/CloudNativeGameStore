@@ -1,0 +1,89 @@
+package com.cognizant.levelupservice.controller;
+
+import com.cognizant.levelupservice.exception.NotFoundException;
+import com.cognizant.levelupservice.service.ServiceLayer;
+import com.cognizant.levelupservice.viewModel.LevelUpViewModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+
+@RestController
+@RequestMapping("/levelup")
+public class LevelUpController {
+
+    @Autowired
+    ServiceLayer serviceLayer;
+
+    @PostMapping//Another way to set the Rest API Post mapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public LevelUpViewModel createLevelUp(@RequestBody @Valid LevelUpViewModel levelUpViewModel) {
+
+        return serviceLayer.saveLevelUp(levelUpViewModel);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<LevelUpViewModel> getLevelUps() {
+
+        List<LevelUpViewModel> levelUps = serviceLayer.findAllLevelUps();
+
+        if (levelUps != null && levelUps.size() == 0)
+            throw new NotFoundException("we don't have any level ups");
+        return levelUps;
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public LevelUpViewModel getLevelUp(@PathVariable("id") int id) {
+
+        LevelUpViewModel levelUpViewModel = serviceLayer.findLevelUp(id);
+
+        if (levelUpViewModel == null)
+
+            throw new NotFoundException("Sorry! we don't have this Level up id no. " + id);
+        return levelUpViewModel;
+    }
+
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteLevelUp(@PathVariable("id") int id) {
+
+        serviceLayer.removeLevelUp(id);
+    }
+
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateLevelUp(@PathVariable("id") int id, @RequestBody @Valid LevelUpViewModel levelUpViewModel) {
+
+        if (levelUpViewModel.getLevelUpId() == 0)
+            levelUpViewModel.setLevelUpId(id);
+
+        if (id != levelUpViewModel.getLevelUpId()) {
+
+            throw new IllegalArgumentException("Sorry! we don't have level up ID no. " + id);
+        }
+
+        serviceLayer.updateLevelUp(levelUpViewModel);
+    }
+
+
+    @GetMapping("/customer/{customerId}")
+    @ResponseStatus(HttpStatus.OK)
+    public LevelUpViewModel getLevelUpByCustomerId(@PathVariable("customerId") int customerId) {
+
+        LevelUpViewModel levelUpViewModel = serviceLayer.findLevelUpByCustomerId(customerId);
+
+        if (levelUpViewModel == null)
+
+            throw new NotFoundException("Sorry! we don't have this customer id no. " + customerId);
+
+        return levelUpViewModel;
+    }
+
+
+}
