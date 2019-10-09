@@ -33,16 +33,17 @@ public class ServiceLayer {
 
         customer = cd.createCustomer(customer);
 
-        cvm.setCustomerId(customer.getCustomerId());
-        cvm.setFirstName(customer.getFirstName());
-        cvm.setLastName(customer.getLastName());
-        cvm.setStreet(customer.getStreet());
-        cvm.setCity(customer.getCity());
-        cvm.setZip(customer.getZip());
-        cvm.setEmail(customer.getEmail());
-        cvm.setPhone(customer.getPhone());
-
-        return cvm;
+//        cvm.setCustomerId(customer.getCustomerId());
+//        cvm.setFirstName(customer.getFirstName());
+//        cvm.setLastName(customer.getLastName());
+//        cvm.setStreet(customer.getStreet());
+//        cvm.setCity(customer.getCity());
+//        cvm.setZip(customer.getZip());
+//        cvm.setEmail(customer.getEmail());
+//        cvm.setPhone(customer.getPhone());
+//
+//        return cvm;
+        return buildCustomerViewModel(customer);
     }
 
     public CustomerViewModel getCustomer(Integer customerId) {
