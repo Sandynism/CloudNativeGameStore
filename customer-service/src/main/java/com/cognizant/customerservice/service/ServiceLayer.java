@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Component
 public class ServiceLayer {
@@ -70,6 +71,12 @@ public class ServiceLayer {
     }
 
     public void deleteCustomer(Integer customerId) {
+
+        Customer customer = cd.getCustomer(customerId);
+
+        if (customer == null)
+            throw new NoSuchElementException("Customer with ID " + customerId + " does not exist.");
+
         cd.deleteCustomer(customerId);
     }
 
@@ -77,7 +84,7 @@ public class ServiceLayer {
         List<Customer> customerList = cd.getAllCustomers();
         List<CustomerViewModel> cvmList = new ArrayList<>();
 
-        for(Customer c : customerList) {
+        for (Customer c : customerList) {
             cvmList.add(buildCustomerViewModel(c));
         }
         return cvmList;
