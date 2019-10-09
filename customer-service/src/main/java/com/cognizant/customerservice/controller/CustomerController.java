@@ -1,5 +1,6 @@
 package com.cognizant.customerservice.controller;
 
+import com.cognizant.customerservice.exception.NotFoundException;
 import com.cognizant.customerservice.model.Customer;
 import com.cognizant.customerservice.model.CustomerViewModel;
 import com.cognizant.customerservice.service.ServiceLayer;
@@ -25,13 +26,19 @@ public class CustomerController {
     @GetMapping(value="/{customerId}")
     @ResponseStatus(HttpStatus.OK)
     public CustomerViewModel getCustomer(@PathVariable Integer customerId) {
-        return sl.getCustomer(customerId);
+        CustomerViewModel cvm = sl.getCustomer(customerId);
+        if(cvm == null)
+            throw new NotFoundException("Customer with ID " + customerId + "does not exist.");
+        return cvm;
     }
 
     @PutMapping(value="/{customerId}")
     @ResponseStatus(HttpStatus.OK)
     public void updateCustomer(@RequestBody CustomerViewModel cvm, @PathVariable Integer customerId) {
-        sl.updateCustomer(cvm);
+        CustomerViewModel customer = sl.getCustomer(cvm.getCustomerId());
+        if(customer == null)
+            throw new IllegalArgumentException("Customer with ID " + customerId + " does not exist. Cannot be updated.");
+        sl.updateCustomer(customer);
     }
 
     @DeleteMapping(value="/{customerId}")
