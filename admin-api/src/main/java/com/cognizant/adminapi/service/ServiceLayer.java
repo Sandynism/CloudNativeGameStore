@@ -6,12 +6,9 @@ import com.cognizant.adminapi.exception.NoSuchProductException;
 import com.cognizant.adminapi.exception.NotFoundException;
 import com.cognizant.adminapi.model.*;
 import com.cognizant.adminapi.util.feign.*;
-import feign.Feign;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
