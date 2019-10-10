@@ -27,8 +27,7 @@ public class ProductDaoTest {
 
     @Before
     public void setUp() throws Exception {
-        List<Product> productList = pd.getAllProducts();
-        productList.stream().forEach(p -> pd.deleteProduct(p.getProductId()));
+        pd.getAllProducts().stream().forEach(p -> pd.deleteProduct(p.getProductId()));
     }
 
     @Test

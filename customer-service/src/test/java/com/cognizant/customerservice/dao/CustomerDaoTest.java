@@ -27,8 +27,7 @@ public class CustomerDaoTest {
 
     @Before
     public void setUp() throws Exception {
-        List<Customer> customerList = cd.getAllCustomers();
-        customerList.stream().forEach(c -> cd.deleteCustomer(c.getCustomerId()));
+        cd.getAllCustomers().stream().forEach(c -> cd.deleteCustomer(c.getCustomerId()));
     }
 
     @Test
