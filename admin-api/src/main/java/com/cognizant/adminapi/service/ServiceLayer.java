@@ -216,7 +216,7 @@ public class ServiceLayer {
         levelUp.setPoints(lvm.getPoints());
         levelUp.setMemberDate(lvm.getMemberDate());
 
-        levelUp = levelUpClient.addLevelUp(levelUp);
+        levelUp = levelUpClient.createLevelUp(levelUp);
 
         return buildLevelUpViewModel(levelUp);
 

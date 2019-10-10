@@ -18,6 +18,21 @@ public class LevelUpViewModel {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate memberDate;
 
+    public LevelUpViewModel(){}
+
+    public LevelUpViewModel(Integer customerId, Integer points, LocalDate memberDate) {
+        this.customerId = customerId;
+        this.points = points;
+        this.memberDate = memberDate;
+    }
+
+    public LevelUpViewModel(Integer levelUpId, Integer customerId, Integer points, LocalDate memberDate) {
+        this.levelUpId = levelUpId;
+        this.customerId = customerId;
+        this.points = points;
+        this.memberDate = memberDate;
+    }
+
     public Integer getLevelUpId() {
         return levelUpId;
     }

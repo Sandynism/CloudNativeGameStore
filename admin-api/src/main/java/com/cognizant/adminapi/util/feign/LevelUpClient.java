@@ -10,7 +10,7 @@ import java.util.List;
 public interface LevelUpClient {
 
     @PostMapping(value = "/levelup")
-    LevelUp addLevelUp(@RequestBody LevelUp levelUp);
+    LevelUp createLevelUp(@RequestBody LevelUp levelUp);
 
     @GetMapping(value = "/levelup/{levelUpId}")
     LevelUp getLevelUp(@PathVariable Integer levelUpId);

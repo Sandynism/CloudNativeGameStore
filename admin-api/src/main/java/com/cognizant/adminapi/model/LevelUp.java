@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -17,6 +18,21 @@ public class LevelUp {
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate memberDate;
+
+    public LevelUp(){}
+
+    public LevelUp(Integer customerId, Integer points, LocalDate memberDate) {
+        this.customerId = customerId;
+        this.points = points;
+        this.memberDate = memberDate;
+    }
+
+    public LevelUp(Integer levelUpId, Integer customerId, Integer points, LocalDate memberDate) {
+        this.levelUpId = levelUpId;
+        this.customerId = customerId;
+        this.points = points;
+        this.memberDate = memberDate;
+    }
 
     public Integer getLevelUpId() {
         return levelUpId;
