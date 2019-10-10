@@ -1,7 +1,5 @@
 package com.cognizant.levelupservice.viewModel;
 
-import com.cognizant.levelupservice.model.LevelUp;
-
 import java.time.LocalDate;
 import java.util.Objects;
 

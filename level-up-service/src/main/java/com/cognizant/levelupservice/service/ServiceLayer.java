@@ -21,6 +21,7 @@ public class ServiceLayer {
         this.levelUpDao = levelUpDao;
     }
 
+    @Transactional
     public LevelUpViewModel saveLevelUp (LevelUpViewModel levelUpViewModel){
 
         LevelUp levelUp = new LevelUp();
@@ -99,10 +100,6 @@ public class ServiceLayer {
     }
 
 
-
-
-
-
     @Transactional
     private LevelUpViewModel buildLevelUpViewModel(LevelUp levelUp){
 
@@ -115,9 +112,5 @@ public class ServiceLayer {
         return levelUpViewModel;
 
     }
-
-
-
-
 
 }
