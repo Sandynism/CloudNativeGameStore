@@ -1,11 +1,9 @@
 package com.cognizant.adminapi.service;
 
 import com.cognizant.adminapi.exception.NoSuchCustomerException;
+import com.cognizant.adminapi.exception.NoSuchLevelUpException;
 import com.cognizant.adminapi.exception.NoSuchProductException;
-import com.cognizant.adminapi.model.Customer;
-import com.cognizant.adminapi.model.CustomerViewModel;
-import com.cognizant.adminapi.model.Product;
-import com.cognizant.adminapi.model.ProductViewModel;
+import com.cognizant.adminapi.model.*;
 import com.cognizant.adminapi.util.feign.*;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +33,10 @@ public class ServiceLayer {
 //    }
 
     @Autowired
-    public ServiceLayer(CustomerClient customerClient, ProductClient productClient) {
+    public ServiceLayer(CustomerClient customerClient, ProductClient productClient, LevelUpClient levelUpClient) {
         this.customerClient = customerClient;
         this.productClient = productClient;
-//        this.levelUpClient = levelUpClient;
+        this.levelUpClient = levelUpClient;
 //        this.inventoryClient = inventoryClient;
 //        this.invoiceClient = invoiceClient;
     }
@@ -207,5 +205,33 @@ public class ServiceLayer {
 
         return pvm;
     }
+
+
+    //LEVEL UP SERVICE
+    public LevelUp createLevelUp(LevelUp levelUp) {
+        return levelUpClient.addLevelUp(levelUp);
+    }
+
+    public LevelUp getLevelUp(Integer levelUpId) {
+        return levelUpClient.getLevelUp(levelUpId);
+    }
+
+    public void updateLevelUp(LevelUp levelUp) {
+        levelUpClient.updateLevelUp(levelUp, levelUp.getLevelUpId());
+    }
+
+    public void deleteLevelUp(Integer levelUpId) {
+        levelUpClient.deleteLevelUp(levelUpId);
+    }
+
+    public List<LevelUp> getAllLevelUps() {
+        List<LevelUp> levelUps = levelUpClient.getAllLevelUps();
+        return levelUps;
+    }
+
+    public LevelUp getLevelUpByCustomerId(Integer customerId) {
+        return levelUpClient.getLevelUpByCustomerId(customerId);
+    }
+
 
 }

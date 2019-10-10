@@ -7,24 +7,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @FeignClient(name = "level-up-service")
-@RequestMapping(value = "/levelup")
 public interface LevelUpClient {
 
-    @PostMapping
+    @PostMapping(value = "/levelup")
     LevelUp addLevelUp(@RequestBody LevelUp levelUp);
 
-    @GetMapping(value = "/{levelUpId}")
+    @GetMapping(value = "/levelup/{levelUpId}")
     LevelUp getLevelUp(@PathVariable Integer levelUpId);
 
-    @PutMapping(value = "/{levelUpId}")
+    @PutMapping(value = "/levelup/{levelUpId}")
     void updateLevelUp(@RequestBody LevelUp levelUp, @PathVariable Integer levelUpId);
 
-    @DeleteMapping(value = "/{levelUpId}")
+    @DeleteMapping(value = "/levelup/{levelUpId}")
     void deleteLevelUp(@PathVariable Integer levelUpId);
 
-    @GetMapping
+    @GetMapping(value = "/levelup")
     List<LevelUp> getAllLevelUps();
 
-    @GetMapping("/customer/{customerId}")
+    @GetMapping("/levelup/customer/{customerId}")
     LevelUp getLevelUpByCustomerId(@PathVariable(name = "customerId") Integer customerId);
 }

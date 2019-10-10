@@ -43,9 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //order them with most specific to most general
         httpSecurity.authorizeRequests()
 //                .mvcMatchers("/login").authenticated()
-                .mvcMatchers(HttpMethod.PUT, "/products/*", "/customers/*").hasAnyRole("ADMIN", "MANAGER", "TEAMLEAD")
-                .mvcMatchers(HttpMethod.DELETE, "/products/*", "/customers/*").hasRole("ADMIN")
-                .mvcMatchers(HttpMethod.POST, "/products").hasAnyRole("MANAGER, ADMIN")
+                .mvcMatchers(HttpMethod.PUT, "/products/*", "/customers/*", "/levelup/*").hasAnyRole("ADMIN", "MANAGER", "TEAMLEAD")
+                .mvcMatchers(HttpMethod.DELETE, "/products/*", "/customers/*", "/levelup/*").hasRole("ADMIN")
+                .mvcMatchers(HttpMethod.POST, "/products", "/levelup").hasAnyRole("MANAGER, ADMIN")
                 .mvcMatchers(HttpMethod.POST, "/customers").hasRole("TEAMLEAD")
                 .anyRequest().permitAll();
 

@@ -31,9 +31,9 @@ public class ServiceLayer {
 
         levelUp = levelUpDao.addLevelUp(levelUp);
 
-        levelUpViewModel.setLevelUpId(levelUp.getLevelUpId());
+//        levelUpViewModel.setLevelUpId(levelUp.getLevelUpId());
 
-        return levelUpViewModel;
+        return buildLevelUpViewModel(levelUp);
 
     }
 
@@ -94,7 +94,6 @@ public class ServiceLayer {
 
         if(levelUp == null) throw new NoSuchElementException(String.format("no Level up with customer id %s", customerId));
 
-        else
             return buildLevelUpViewModel(levelUp);
 
     }
