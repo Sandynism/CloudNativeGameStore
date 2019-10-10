@@ -43,7 +43,7 @@ public class CustomerController {
         if (customer == null)
             throw new IllegalArgumentException("Customer with ID " + customerId + " does not exist. Cannot be updated.");
 
-        sl.updateCustomer(customer);
+        sl.updateCustomer(cvm);
     }
 
     @DeleteMapping(value = "/{customerId}")

@@ -35,8 +35,7 @@ public class Customer {
     }
 
     //input constructor
-    public Customer( String firstName, String lastName, String street, String city, String zip, String email, String phone) {
-        this.customerId = customerId;
+    public Customer(String firstName, String lastName, String street, String city, String zip, String email, String phone) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.street = street;

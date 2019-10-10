@@ -7,22 +7,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @FeignClient(name = "customer-service")
-@RequestMapping(value = "/customers")
 public interface CustomerClient {
 
-    @PostMapping
+    @PostMapping(value = "/customers")
     Customer createCustomer(@RequestBody Customer customer);
 
-    @GetMapping(value = "/{customerId}")
+    @GetMapping(value = "/customers/{customerId}")
     Customer getCustomer(@PathVariable Integer customerId);
 
-    @PutMapping(value = "/{customerId}")
+    @PutMapping(value = "/customers/{customerId}")
     void updateCustomer(@RequestBody Customer customer, @PathVariable Integer customerId);
 
-    @DeleteMapping(value = "/{customerId}")
+    @DeleteMapping(value = "/customers/{customerId}")
     void deleteCustomer(@PathVariable Integer customerId);
 
-    @GetMapping
+    @GetMapping(value = "/customers")
     List<Customer> getAllCustomers();
 
 }

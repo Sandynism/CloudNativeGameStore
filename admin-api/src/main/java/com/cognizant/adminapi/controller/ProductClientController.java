@@ -1,5 +1,6 @@
 package com.cognizant.adminapi.controller;
 
+import com.cognizant.adminapi.exception.NoSuchProductException;
 import com.cognizant.adminapi.exception.NotFoundException;
 import com.cognizant.adminapi.service.ServiceLayer;
 import com.cognizant.adminapi.model.ProductViewModel;
@@ -26,33 +27,33 @@ public class ProductClientController {
 
     @GetMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductViewModel getProduct(@PathVariable Integer productId) {
+    public ProductViewModel getProduct(@PathVariable(name="productId") Integer productId) {
         ProductViewModel pvm = sl.getProduct(productId);
 
         if (pvm == null)
-            throw new NotFoundException("Product with ID " + productId + " does not exist.");
+            throw new NoSuchProductException(productId);
 
         return pvm;
     }
 
     @PutMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateProduct(@RequestBody ProductViewModel pvm, @PathVariable Integer productId) {
-        ProductViewModel product = sl.getProduct(productId);
+    public void updateProduct(@RequestBody ProductViewModel pvm, @PathVariable(name="productId") Integer productId) {
+        ProductViewModel product = sl.getProduct(pvm.getProductId());
 
         if (product == null)
-            throw new NotFoundException("Product with ID " + productId + " does not exist.");
+            throw new NoSuchProductException(productId);
 
         sl.updateProduct(pvm);
     }
 
     @DeleteMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteProduct(@PathVariable Integer productId) {
+    public void deleteProduct(@PathVariable(name="productId") Integer productId) {
         ProductViewModel product = sl.getProduct(productId);
 
         if (product == null)
-            throw new NotFoundException("Product with ID " + productId + " does not exist.");
+            throw new NoSuchProductException(productId);
 
         sl.deleteProduct(productId);
     }
