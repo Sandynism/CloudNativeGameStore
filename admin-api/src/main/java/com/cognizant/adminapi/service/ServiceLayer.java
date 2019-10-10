@@ -3,12 +3,15 @@ package com.cognizant.adminapi.service;
 import com.cognizant.adminapi.exception.NoSuchCustomerException;
 import com.cognizant.adminapi.exception.NoSuchLevelUpException;
 import com.cognizant.adminapi.exception.NoSuchProductException;
+import com.cognizant.adminapi.exception.NotFoundException;
 import com.cognizant.adminapi.model.*;
 import com.cognizant.adminapi.util.feign.*;
+import feign.Feign;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -207,31 +210,95 @@ public class ServiceLayer {
     }
 
 
+
     //LEVEL UP SERVICE
-    public LevelUp createLevelUp(LevelUp levelUp) {
-        return levelUpClient.addLevelUp(levelUp);
+    public LevelUpViewModel createLevelUp(LevelUpViewModel lvm) {
+
+        LevelUp levelUp = new LevelUp();
+        levelUp.setCustomerId(lvm.getCustomerId());
+        levelUp.setPoints(lvm.getPoints());
+        levelUp.setMemberDate(lvm.getMemberDate());
+
+        levelUp = levelUpClient.addLevelUp(levelUp);
+
+        return buildLevelUpViewModel(levelUp);
+
     }
 
-    public LevelUp getLevelUp(Integer levelUpId) {
-        return levelUpClient.getLevelUp(levelUpId);
+    public LevelUpViewModel getLevelUp(Integer levelUpId) throws NoSuchLevelUpException {
+        LevelUp levelUp;
+        try {
+            levelUp = levelUpClient.getLevelUp(levelUpId);
+        } catch (FeignException.NotFound fe) {
+            System.out.println("Level up " + levelUpId + " could not be found. " + fe.getMessage());
+            throw new NoSuchLevelUpException(levelUpId);
+        }
+        return buildLevelUpViewModel(levelUp);
     }
 
-    public void updateLevelUp(LevelUp levelUp) {
-        levelUpClient.updateLevelUp(levelUp, levelUp.getLevelUpId());
+    public void updateLevelUp(LevelUpViewModel lvm) throws NoSuchLevelUpException {
+        try {
+            int id = levelUpClient.getLevelUp(lvm.getLevelUpId()).getLevelUpId();
+        } catch (FeignException.NotFound fe) {
+            System.out.println("Level up " + lvm.getLevelUpId() + " could not be found. " + fe.getMessage());
+            throw new NoSuchLevelUpException(lvm.getLevelUpId());
+        }
+
+        LevelUp levelUp = new LevelUp();
+        levelUp.setLevelUpId(lvm.getLevelUpId());
+        levelUp.setCustomerId(lvm.getCustomerId());
+        levelUp.setPoints(lvm.getPoints());
+        levelUp.setMemberDate(lvm.getMemberDate());
+
+        levelUpClient.updateLevelUp(levelUp, lvm.getLevelUpId());
+
     }
 
-    public void deleteLevelUp(Integer levelUpId) {
+    public void deleteLevelUp(Integer levelUpId) throws NoSuchLevelUpException {
+        try {
+            int id = levelUpClient.getLevelUp(levelUpId).getLevelUpId();
+        } catch (FeignException.NotFound fe) {
+            System.out.println("Level up " + levelUpId + " could not be found. " + fe.getMessage());
+            throw new NoSuchLevelUpException(levelUpId);
+        }
+
         levelUpClient.deleteLevelUp(levelUpId);
     }
 
-    public List<LevelUp> getAllLevelUps() {
-        List<LevelUp> levelUps = levelUpClient.getAllLevelUps();
-        return levelUps;
+
+    public List<LevelUpViewModel> getAllLevelUps() {
+        List<LevelUp> levelUpsList = levelUpClient.getAllLevelUps();
+        List<LevelUpViewModel> lvmList = new ArrayList<>();
+
+        for (LevelUp l : levelUpsList) {
+            lvmList.add(buildLevelUpViewModel(l));
+        }
+
+        return lvmList;
     }
 
-    public LevelUp getLevelUpByCustomerId(Integer customerId) {
-        return levelUpClient.getLevelUpByCustomerId(customerId);
+    public LevelUpViewModel getLevelUpByCustomerId(Integer customerId) {
+        LevelUp levelUp = levelUpClient.getLevelUpByCustomerId(customerId);
+
+        if (levelUp == null)
+            throw new NotFoundException("There is no level up entry with customer id " + customerId);
+
+        return buildLevelUpViewModel(levelUp);
     }
+
+
+    private LevelUpViewModel buildLevelUpViewModel(LevelUp levelUp) {
+
+        LevelUpViewModel levelUpViewModel = new LevelUpViewModel();
+        levelUpViewModel.setLevelUpId(levelUp.getLevelUpId());
+        levelUpViewModel.setCustomerId(levelUp.getCustomerId());
+        levelUpViewModel.setPoints(levelUp.getPoints());
+        levelUpViewModel.setMemberDate(levelUp.getMemberDate());
+
+        return levelUpViewModel;
+    }
+
+
 
 
 }

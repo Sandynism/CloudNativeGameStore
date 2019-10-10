@@ -1,7 +1,7 @@
 package com.cognizant.adminapi.controller;
 
+import com.cognizant.adminapi.exception.NoSuchCustomerException;
 import com.cognizant.adminapi.exception.NotFoundException;
-import com.cognizant.adminapi.model.Customer;
 import com.cognizant.adminapi.model.CustomerViewModel;
 import com.cognizant.adminapi.service.ServiceLayer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +50,11 @@ public class CustomerClientController {
     @DeleteMapping(value = "/{customerId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCustomer(@PathVariable(name="customerId") Integer customerId) {
+        CustomerViewModel customer = sl.getCustomer(customerId);
+
+        if(customer == null)
+            throw new NoSuchCustomerException(customerId);
+
         sl.deleteCustomer(customerId);
     }
 

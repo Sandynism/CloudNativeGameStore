@@ -2,7 +2,7 @@ package com.cognizant.adminapi.controller;
 
 import com.cognizant.adminapi.exception.NoSuchLevelUpException;
 import com.cognizant.adminapi.exception.NotFoundException;
-import com.cognizant.adminapi.model.LevelUp;
+import com.cognizant.adminapi.model.LevelUpViewModel;
 import com.cognizant.adminapi.service.ServiceLayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -21,58 +21,63 @@ public class LevelUpClientController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LevelUp createLevelUp(@RequestBody LevelUp levelUp) {
-        return sl.createLevelUp(levelUp);
+    public LevelUpViewModel createLevelUp(@RequestBody LevelUpViewModel lvm) {
+        return sl.createLevelUp(lvm);
     }
 
     @GetMapping(value = "/{levelUpId}")
     @ResponseStatus(HttpStatus.OK)
-    public LevelUp getLevelUp(@PathVariable(name = "levelUpId") Integer levelUpId) throws NoSuchLevelUpException {
-        LevelUp levelUp = sl.getLevelUp(levelUpId);
+    public LevelUpViewModel getLevelUp(@PathVariable(name = "levelUpId") Integer levelUpId) throws NoSuchLevelUpException {
+        LevelUpViewModel lvm = sl.getLevelUp(levelUpId);
 
-        if (levelUp == null)
+        if (lvm == null)
             throw new NoSuchLevelUpException(levelUpId);
 
-        return levelUp;
+        return lvm;
     }
 
     @PutMapping(value = "/{levelUpId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateLevelUp(@RequestBody LevelUp levelUp, @PathVariable(name = "levelUpId") Integer levelUpId) throws NoSuchLevelUpException {
-        LevelUp lu = sl.getLevelUp(levelUp.getCustomerId());
+    public void updateLevelUp(@RequestBody LevelUpViewModel lvm, @PathVariable(name = "levelUpId") Integer levelUpId) throws NoSuchLevelUpException {
+        LevelUpViewModel levelUp = sl.getLevelUp(lvm.getLevelUpId());
 
-        if (lu == null)
+        if (levelUp == null)
             throw new NoSuchLevelUpException(levelUpId);
 
-        sl.updateLevelUp(levelUp);
+        sl.updateLevelUp(lvm);
     }
 
     @DeleteMapping(value = "/{levelUpId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteLevelUp(@PathVariable(name = "levelUpId") Integer levelUpId) {
+        LevelUpViewModel levelUp = sl.getLevelUp(levelUpId);
+
+        if (levelUp == null)
+            throw new NoSuchLevelUpException(levelUpId);
+
         sl.deleteLevelUp(levelUpId);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<LevelUp> getAllLevelUps() {
-        List<LevelUp> levelUpList = sl.getAllLevelUps();
+    public List<LevelUpViewModel> getAllLevelUps() {
+        List<LevelUpViewModel> lvmList = sl.getAllLevelUps();
 
-        if (levelUpList != null && levelUpList.size() == 0) {
+        if (lvmList != null && lvmList.size() == 0) {
             throw new NotFoundException("There are no level up entries available.");
         }
 
-        return levelUpList;
+        return lvmList;
     }
 
     @GetMapping(value = "/customer/{customerId}")
     @ResponseStatus(HttpStatus.OK)
-    public LevelUp getLevelUpByCustomerId(@PathVariable(name = "customerId") Integer customerId) {
-        LevelUp lu = sl.getLevelUpByCustomerId(customerId);
+    public LevelUpViewModel getLevelUpByCustomerId(@PathVariable(name = "customerId") Integer customerId) {
+        LevelUpViewModel lvm = sl.getLevelUpByCustomerId(customerId);
 
-        if (lu == null)
+        if (lvm == null)
             throw new NotFoundException("There is no level up entry with customer id " + customerId);
 
-        return lu;
+        return lvm;
     }
 }
