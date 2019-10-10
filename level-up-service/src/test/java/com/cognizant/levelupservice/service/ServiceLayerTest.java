@@ -57,7 +57,6 @@ public class ServiceLayerTest {
         // LevelUp List
         List<LevelUp> levelUpList = new ArrayList<>();
         levelUpList.add(levelUp);
-        levelUpList.add(levelUp2);
 
         // LevelUp add
         doReturn(levelUp).when(levelUpDao).addLevelUp(levelUp1);
@@ -135,17 +134,11 @@ public class ServiceLayerTest {
         levelUpViewModel.setMemberDate(LocalDate.of(2012, 12, 12));
         levelUpViewModel.setPoints(100);
 
-
-        LevelUpViewModel levelUpViewModel1 = new LevelUpViewModel();
-        levelUpViewModel1.setCustomerId(6);
-        levelUpViewModel1.setMemberDate(LocalDate.of(2011, 11, 11));
-        levelUpViewModel1.setPoints(111);
-
         levelUpViewModel = serviceLayer.saveLevelUp(levelUpViewModel);
 
         List<LevelUpViewModel> levelUpViewModels = serviceLayer.findAllLevelUps();
 
-        assertEquals(2, levelUpViewModels.size());
+        assertEquals(1, levelUpViewModels.size());
 
     }
 

@@ -1,7 +1,6 @@
 package com.cognizant.levelupservice.controller;
 
 import com.cognizant.levelupservice.exception.NotFoundException;
-import com.sun.media.sound.InvalidFormatException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.hateoas.VndErrors;
 import org.springframework.http.HttpStatus;
@@ -62,13 +61,6 @@ public class ControllerExceptionHandler {
         return responseEntity;
     }
 
-    @ExceptionHandler(value = {InvalidFormatException.class})
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ResponseEntity<VndErrors> dataAccessException(DataAccessException e, WebRequest request) {
-        VndErrors error = new VndErrors(request.toString(), "An internal error occured" + e.getMessage());
-        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
-        return responseEntity;
-    }
 
     @ExceptionHandler(value = {NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
