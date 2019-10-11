@@ -33,7 +33,6 @@ public class InvoiceServiceLayer {
         this.invoiceItemServiceLayer = invoiceItemServiceLayer;
     }
 
-    @Autowired
 
 
     @Transactional
