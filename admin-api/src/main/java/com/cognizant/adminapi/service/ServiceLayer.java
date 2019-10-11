@@ -1,12 +1,10 @@
 package com.cognizant.adminapi.service;
 
-import com.cognizant.adminapi.exception.NoSuchCustomerException;
-import com.cognizant.adminapi.exception.NoSuchLevelUpException;
-import com.cognizant.adminapi.exception.NoSuchProductException;
-import com.cognizant.adminapi.exception.NotFoundException;
+import com.cognizant.adminapi.exception.*;
 import com.cognizant.adminapi.model.*;
 import com.cognizant.adminapi.util.feign.*;
 import feign.FeignException;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -207,7 +205,6 @@ public class ServiceLayer {
     }
 
 
-
     //LEVEL UP SERVICE
     public LevelUpViewModel createLevelUp(LevelUpViewModel lvm) {
 
@@ -308,7 +305,7 @@ public class ServiceLayer {
     }
 
     public InventoryViewModel getInventory(Integer inventoryId) {
-        Inventory inventory = id.getInventory(inventoryId);
+        Inventory inventory = inventoryClient.getInventory(inventoryId);
 
         if (inventory == null) {
             return null;
@@ -318,35 +315,46 @@ public class ServiceLayer {
     }
 
     public void updateInventory(InventoryViewModel ivm) {
+        try {
+            int id = inventoryClient.getInventory(ivm.getInventoryId()).getInventoryId();
+        } catch (FeignException.NotFound fe) {
+            System.out.println("Inventory " + ivm.getInventoryId() + " could not be found. " + fe.getMessage());
+            throw new NoSuchInventoryException(ivm.getInventoryId());
+        }
+
         Inventory inventory = new Inventory();
         inventory.setInventoryId(ivm.getInventoryId());
         inventory.setProductId(ivm.getProductId());
         inventory.setQuantity(ivm.getQuantity());
 
-        id.updateInventory(inventory);
+        inventoryClient.updateInventory(inventory, ivm.getInventoryId());
     }
 
-    public void deleteInventory(Integer inventoryId) {
-        Inventory inventory = id.getInventory(inventoryId);
+    public void deleteInventory(Integer inventoryId) throws NoSuchInventoryException{
+        try {
+            int id = inventoryClient.getInventory(inventoryId).getInventoryId();
+        } catch (FeignException.NotFound fe) {
+            System.out.println("Inventory " + inventoryId + " could not be found. " + fe.getMessage());
+            throw new NoSuchInventoryException(inventoryId);
+        }
 
-        if (inventory == null)
-            throw new NoSuchElementException("Inventory with ID " + inventoryId + " does not exist.");
+        inventoryClient.deleteInventory(inventoryId);
 
-        id.deleteInventory(inventoryId);
     }
 
     public List<InventoryViewModel> getAllInventory() {
-        List<Inventory> inventoryList = id.getAllInventory();
+        List<Inventory> inventoryList = inventoryClient.getAllInventory();
         List<InventoryViewModel> ivmList = new ArrayList<>();
 
         for (Inventory i : inventoryList) {
             ivmList.add(buildInventoryViewModel(i));
         }
+
         return ivmList;
     }
 
     public List<InventoryViewModel> getAllInventoryByProductId(Integer productId) {
-        List<Inventory> inventoryList = id.getAllInventoryByProductId(productId);
+        List<Inventory> inventoryList = inventoryClient.getAllInventoryByProductId(productId);
         List<InventoryViewModel> ivmList = new ArrayList<>();
 
         for (Inventory i : inventoryList) {
@@ -365,7 +373,6 @@ public class ServiceLayer {
 
         return ivm;
     }
-
 
 
 }
