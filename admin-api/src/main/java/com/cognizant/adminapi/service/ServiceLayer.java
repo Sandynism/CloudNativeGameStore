@@ -304,17 +304,20 @@ public class ServiceLayer {
         return buildInventoryViewModel(inventory);
     }
 
-    public InventoryViewModel getInventory(Integer inventoryId) {
-        Inventory inventory = inventoryClient.getInventory(inventoryId);
+    public InventoryViewModel getInventory(Integer inventoryId) throws NoSuchInventoryException {
+        Inventory inventory;
 
-        if (inventory == null) {
-            return null;
-        } else {
-            return buildInventoryViewModel(inventory);
+        try {
+            inventory = inventoryClient.getInventory(inventoryId);
+        } catch (FeignException.NotFound fe) {
+            System.out.println("Inventory " + inventoryId + " could not be found. " + fe.getMessage());
+            throw new NoSuchInventoryException(inventoryId);
         }
+
+        return buildInventoryViewModel(inventory);
     }
 
-    public void updateInventory(InventoryViewModel ivm) {
+    public void updateInventory(InventoryViewModel ivm) throws NoSuchInventoryException {
         try {
             int id = inventoryClient.getInventory(ivm.getInventoryId()).getInventoryId();
         } catch (FeignException.NotFound fe) {
@@ -330,7 +333,7 @@ public class ServiceLayer {
         inventoryClient.updateInventory(inventory, ivm.getInventoryId());
     }
 
-    public void deleteInventory(Integer inventoryId) throws NoSuchInventoryException{
+    public void deleteInventory(Integer inventoryId) throws NoSuchInventoryException {
         try {
             int id = inventoryClient.getInventory(inventoryId).getInventoryId();
         } catch (FeignException.NotFound fe) {
