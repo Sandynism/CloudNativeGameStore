@@ -153,8 +153,6 @@ public class ServiceLayerTest {
 
         levelUpViewModel = serviceLayer.saveLevelUp(levelUpViewModel);
 
-
-
         LevelUpViewModel fromService = serviceLayer.findLevelUpByCustomerId(2);
 
         assertNotNull(fromService);

@@ -91,7 +91,7 @@ public class InvoiceServiceLayer {
     }
 
 
-    public InvoiceViewModel findInvoice (Integer invoiceId) {
+    InvoiceViewModel findInvoice (Integer invoiceId) {
 
         Invoice invoice = invoiceDao.getInvoice(invoiceId);
 
@@ -111,6 +111,9 @@ public class InvoiceServiceLayer {
 
         return invoiceViewModel;
     }
+
+
+
 
 
     }

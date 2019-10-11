@@ -1,8 +1,6 @@
 package com.cognizant.invoiceservice.service;
 
-import com.cognizant.invoiceservice.dao.InvoiceDao;
 import com.cognizant.invoiceservice.dao.InvoiceItemDao;
-import com.cognizant.invoiceservice.model.Invoice;
 import com.cognizant.invoiceservice.model.InvoiceItem;
 import com.cognizant.invoiceservice.viewModel.InvoiceItemViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
