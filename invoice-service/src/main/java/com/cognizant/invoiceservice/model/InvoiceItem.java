@@ -6,26 +6,26 @@ import java.util.Objects;
 
 public class InvoiceItem {
 
-    private Integer InvoiceItemId;
-    private Integer InvoiceId;
+    private Integer invoiceItemId;
+    private Integer invoiceId;
     private Integer InventoryId;
     private Integer quantity;
     private BigDecimal unitPrice;
 
     public Integer getInvoiceItemId() {
-        return InvoiceItemId;
+        return invoiceItemId;
     }
 
     public void setInvoiceItemId(Integer invoiceItemId) {
-        InvoiceItemId = invoiceItemId;
+        this.invoiceItemId = invoiceItemId;
     }
 
     public Integer getInvoiceId() {
-        return InvoiceId;
+        return invoiceId;
     }
 
     public void setInvoiceId(Integer invoiceId) {
-        InvoiceId = invoiceId;
+        this.invoiceId = invoiceId;
     }
 
     public Integer getInventoryId() {

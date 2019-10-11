@@ -1,6 +1,7 @@
 package com.cognizant.invoiceservice.dao;
 
 import com.cognizant.invoiceservice.model.Invoice;
+import com.cognizant.invoiceservice.model.InvoiceItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,15 +13,21 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.Assert.*;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class InvoiceDaoJdbcTemplateImplTest {
 
     @Autowired
     InvoiceDao invoiceDao;
+    @Autowired
+    InvoiceItemDao invoiceItemDao;
 
     @Before
     public void setUp() throws Exception {
+        List<InvoiceItem> invoiceItems = invoiceItemDao.getAllInvoiceItems();
+
+        invoiceItems.forEach(invoiceItem -> invoiceItemDao.deleteInvoiceItem(invoiceItem.getInvoiceItemId()));
 
         List<Invoice> invoices = invoiceDao.getAllInvoices();
 
