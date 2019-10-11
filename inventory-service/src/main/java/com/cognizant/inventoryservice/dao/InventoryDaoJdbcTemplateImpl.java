@@ -29,6 +29,9 @@ public class InventoryDaoJdbcTemplateImpl implements InventoryDao {
     private static final String SELECT_ALL_INVENTORY_SQL =
             "select * from inventory";
 
+    private static final String SELECT_ALL_INVENTORY_BY_PRODUCT_ID_SQL =
+            "select * from inventory where product_id = ?";
+
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -75,5 +78,10 @@ public class InventoryDaoJdbcTemplateImpl implements InventoryDao {
     @Override
     public List<Inventory> getAllInventory() {
         return jdbcTemplate.query(SELECT_ALL_INVENTORY_SQL, this::mapRowToInventory);
+    }
+
+    @Override
+    public List<Inventory> getAllInventoryByProductId(Integer productId) {
+        return jdbcTemplate.query(SELECT_ALL_INVENTORY_BY_PRODUCT_ID_SQL, this::mapRowToInventory, productId);
     }
 }

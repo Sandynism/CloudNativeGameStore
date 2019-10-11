@@ -15,4 +15,6 @@ public interface InventoryDao {
     void deleteInventory(Integer inventoryId);
 
     List<Inventory> getAllInventory();
+
+    List<Inventory> getAllInventoryByProductId(Integer productId);
 }

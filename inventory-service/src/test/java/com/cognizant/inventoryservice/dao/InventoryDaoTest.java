@@ -66,4 +66,15 @@ public class InventoryDaoTest {
         List<Inventory> inventoryList = id.getAllInventory();
         assertEquals(inventoryList.size(), 2);
     }
+
+    @Test
+    public void getAllInventoryByProductId() {
+        Inventory inventory1 = id.createInventory(I_INPUT1);
+
+        List<Inventory> inventoryList = id.getAllInventoryByProductId(1);
+        assertEquals(inventoryList.size(), 1);
+
+        List<Inventory> otherList = id.getAllInventoryByProductId(5);
+        assertEquals(otherList.size(), 0);
+    }
 }
