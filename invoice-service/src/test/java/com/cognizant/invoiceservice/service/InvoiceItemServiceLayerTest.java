@@ -81,6 +81,9 @@ public class InvoiceItemServiceLayerTest {
         doNothing().when(invoiceItemDao).deleteInvoiceItem(11);
         doReturn(null).when(invoiceItemDao).getInvoiceItem(11);
 
+        doNothing().when(invoiceItemDao).deleteByInvoiceId(1);
+        doReturn(null).when(invoiceItemDao).getInvoiceItemsByInvoiceId(1);
+
         doReturn(invoiceItems).when(invoiceItemDao).getAllInvoiceItems();
 
         doReturn(invoiceItems1).when(invoiceItemDao).getInvoiceItemsByInvoiceId(5);
@@ -137,6 +140,16 @@ public class InvoiceItemServiceLayerTest {
         invoiceItemServiceLayer.removeInvoiceItem(11);
 
         InvoiceItemViewModel invoiceItemViewModel = invoiceItemServiceLayer.findInvoiceItem(11);
+
+    }
+
+
+    @Test(expected = NullPointerException.class)
+    public void removeInvoiceItemByInvoiceId() {
+
+        invoiceItemServiceLayer.removeInvoiceItemByInvoiceId(1);
+
+        List<InvoiceItemViewModel> invoiceItemViewModel = invoiceItemServiceLayer.findAllInvoiceItemByInvoiceId(1);
 
     }
 

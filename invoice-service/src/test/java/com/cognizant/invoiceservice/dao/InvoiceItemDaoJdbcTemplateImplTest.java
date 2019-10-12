@@ -186,6 +186,32 @@ public class InvoiceItemDaoJdbcTemplateImplTest {
     }
 
 
+    @Test
+    public void deleteInvoiceItemByInvoiceId(){
+
+        Invoice invoice = new Invoice();
+        invoice.setCustomerId(3);
+        invoice.setPurchaseDate(LocalDate.of(2012, 12, 12));
+
+        invoice = invoiceDao.addInvoice(invoice);
+
+        InvoiceItem invoiceItem = new InvoiceItem();
+        invoiceItem.setInvoiceId(invoice.getInvoiceId());
+        invoiceItem.setInventoryId(12);
+        invoiceItem.setQuantity(20);
+        invoiceItem.setUnitPrice(new BigDecimal("11.01"));
+
+        invoiceItem = invoiceItemDao.addInvoiceItem(invoiceItem);
+
+        invoiceItemDao.deleteByInvoiceId(invoiceItem.getInvoiceId());
+
+        List<InvoiceItem> fromDao = invoiceItemDao.getInvoiceItemsByInvoiceId(invoiceItem.getInvoiceItemId());
+
+        assertEquals(0, fromDao.size());
+
+    }
+
+
 
 
 }

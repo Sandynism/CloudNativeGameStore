@@ -22,7 +22,7 @@ public class InvoiceItemServiceLayer {
     }
 
     @Transactional
-     InvoiceItemViewModel saveInvoiceItem(InvoiceItemViewModel invoiceItemViewModel){
+     public InvoiceItemViewModel saveInvoiceItem(InvoiceItemViewModel invoiceItemViewModel){
 
         InvoiceItem invoiceItem = new InvoiceItem();
         invoiceItem.setInvoiceId(invoiceItemViewModel.getInvoiceId());
@@ -37,7 +37,7 @@ public class InvoiceItemServiceLayer {
         return invoiceItemViewModel;
     }
 
-    InvoiceItemViewModel findInvoiceItem(int invoiceItemId){
+    public InvoiceItemViewModel findInvoiceItem(int invoiceItemId){
 
         InvoiceItem invoiceItem = invoiceItemDao.getInvoiceItem(invoiceItemId);
 
@@ -66,7 +66,7 @@ public class InvoiceItemServiceLayer {
 
         InvoiceItem invoiceItem = invoiceItemDao.getInvoiceItem(invoiceItemId);
 
-        if(invoiceItem == null) throw new NoSuchElementException(String.format("no Level up with id %s found", invoiceItemId));
+        if(invoiceItem == null) throw new NoSuchElementException(String.format("no invoice item with id %s found", invoiceItemId));
 
         invoiceItemDao.deleteInvoiceItem(invoiceItemId);
 
@@ -104,7 +104,7 @@ public class InvoiceItemServiceLayer {
 
     }
 
-    InvoiceItemViewModel findInvoiceItemByInventoryId(int inventoryId){
+    public InvoiceItemViewModel findInvoiceItemByInventoryId(int inventoryId){
 
         InvoiceItem invoiceItem = invoiceItemDao.getInvoiceItemByInventoryId(inventoryId);
 
@@ -113,6 +113,17 @@ public class InvoiceItemServiceLayer {
         else
             return buildInvoiceItemViewModel(invoiceItem);
 
+
+    }
+
+
+    public void removeInvoiceItemByInvoiceId (int invoiceId){
+
+        List<InvoiceItem> invoiceItemList = invoiceItemDao.getInvoiceItemsByInvoiceId(invoiceId);
+
+        if(invoiceItemList.isEmpty()) throw new NoSuchElementException(String.format("no invoice items with id %s found", invoiceId));
+
+        invoiceItemDao.deleteByInvoiceId(invoiceId);
 
     }
 
@@ -129,5 +140,8 @@ public class InvoiceItemServiceLayer {
         return invoiceItemViewModel;
 
     }
+
+
+
 
 }

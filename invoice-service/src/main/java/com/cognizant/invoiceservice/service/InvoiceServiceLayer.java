@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 
 @Component @Primary
@@ -32,7 +33,6 @@ public class InvoiceServiceLayer {
         this.invoiceDao = invoiceDao;
         this.invoiceItemServiceLayer = invoiceItemServiceLayer;
     }
-
 
 
     @Transactional
@@ -90,11 +90,11 @@ public class InvoiceServiceLayer {
     }
 
 
-    InvoiceViewModel findInvoice (Integer invoiceId) {
+    public InvoiceViewModel findInvoice(Integer invoiceId) {
 
         Invoice invoice = invoiceDao.getInvoice(invoiceId);
 
-        if(invoice == null)
+        if (invoice == null)
             throw new NoSuchElementException(String.format("No invoice with id %s found", invoiceId));
         else
             return buildInvoiceViewModel(invoice);
@@ -111,10 +111,97 @@ public class InvoiceServiceLayer {
         return invoiceViewModel;
     }
 
+    @Transactional
+    public void updateInvoice(InvoiceViewModel invoiceViewModel, int invoiceId) {
+
+        if (invoiceViewModel.getInvoiceId() == null) {
+
+            invoiceViewModel.setInvoiceId(invoiceId);
+        }
+
+        Invoice invoice = new Invoice();
+        invoice.setInvoiceId(invoiceViewModel.getInvoiceId());
+        invoice.setCustomerId(invoiceViewModel.getCustomerId());
+        invoice.setPurchaseDate(invoiceViewModel.getPurchaseDate());
+
+        invoiceDao.updateInvoice(invoice, invoice.getInvoiceId());
+
+        if (invoiceViewModel.getInvoiceItems() != null) {
+
+            List<CompletableFuture<InvoiceItemViewModel>> listCf = new ArrayList<>();
 
 
+            if (!invoiceViewModel.getInvoiceItems().isEmpty()) {
 
+                Invoice finalInvoice = invoice;
+
+                invoiceViewModel.getInvoiceItems().stream().forEach(invoiceItemViewModel -> {
+
+
+                    invoiceItemViewModel.setInvoiceId(finalInvoice.getInvoiceId());
+
+                    CompletableFuture<InvoiceItemViewModel> cf = CompletableFuture.supplyAsync(System::nanoTime)
+                            .thenApply(start -> {
+                                InvoiceItemViewModel invoiceItemViewModel1 = invoiceItemServiceLayer.saveInvoiceItem(invoiceItemViewModel);
+                                return invoiceItemViewModel1;
+                            }).thenApply(iivm -> {
+                                invoiceItemViewModel.setInvoiceItemId(iivm.getInvoiceItemId());
+                                return invoiceItemViewModel;
+                            });
+                    listCf.add(cf);
+                });
+                CompletableFuture<Void> allFutures =
+                        CompletableFuture.allOf(listCf.toArray(new CompletableFuture[listCf.size()]));
+            }
+        } else {
+            throw new IllegalArgumentException("you can not issue an invoice without invoice items");
+        }
+
+        invoiceViewModel.setInvoiceId(invoice.getInvoiceId());
+    }
+
+    public void removeInvoice(Integer invoiceId) {
+
+        invoiceItemServiceLayer.removeInvoiceItemByInvoiceId(invoiceId);
+
+        Invoice invoice = invoiceDao.getInvoice(invoiceId);
+
+        if(invoice == null)
+            throw new NoSuchElementException(String.format("No invoice with id %s found", invoiceId));
+        else
+            invoiceDao.deleteInvoice(invoiceId);
+    }
+
+
+    public List<InvoiceViewModel> findAllInvoices(){
+
+        List<Invoice> invoices = invoiceDao.getAllInvoices();
+
+        List<InvoiceItemViewModel> invoiceItemViewModels = invoiceItemServiceLayer.findAllInvoiceItems();
+
+        List<InvoiceViewModel> invoiceViewModels = new ArrayList<>();
+
+        for(Invoice i: invoices){
+
+            InvoiceViewModel invoiceViewModel = new InvoiceViewModel();
+            invoiceViewModel.setInvoiceId(i.getInvoiceId());
+            invoiceViewModel.setCustomerId(i.getCustomerId());
+            invoiceViewModel.setPurchaseDate(i.getPurchaseDate());
+
+            invoiceViewModel.setInvoiceItems(invoiceItemViewModels.stream().filter(k -> k.getInvoiceId().equals(i.getInvoiceId())).collect(Collectors.toList()));
+
+            invoiceViewModels.add(invoiceViewModel);
+
+        }
+
+        return invoiceViewModels;
 
     }
+
+
+}
+
+
+
 
 
