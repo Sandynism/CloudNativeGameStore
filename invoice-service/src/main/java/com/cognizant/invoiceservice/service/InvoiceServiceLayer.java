@@ -114,6 +114,8 @@ public class InvoiceServiceLayer {
     @Transactional
     public void updateInvoice(InvoiceViewModel invoiceViewModel, int invoiceId) {
 
+        invoiceItemServiceLayer.removeInvoiceItemByInvoiceId(invoiceViewModel.getInvoiceId());
+
         if (invoiceViewModel.getInvoiceId() == null) {
 
             invoiceViewModel.setInvoiceId(invoiceId);
