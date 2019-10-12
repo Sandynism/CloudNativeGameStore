@@ -70,8 +70,13 @@ public class InvoiceController {
 
         if (invoiceId != invoiceViewModel.getInvoiceId()) {
 
-            throw new IllegalArgumentException("Sorry! we don't have invoice ID no. " + invoiceId);
-        }
+            throw new IllegalArgumentException("Sorry! the invoice ids don't match  ");
+
+        } else invoiceViewModel = serviceLayer.findInvoice(invoiceId);
+
+        if (invoiceViewModel == null)
+
+            throw new NotFoundException("Sorry! we don't have this invoice id no. " + invoiceId);
 
         serviceLayer.updateInvoice(invoiceViewModel, invoiceId);
     }
