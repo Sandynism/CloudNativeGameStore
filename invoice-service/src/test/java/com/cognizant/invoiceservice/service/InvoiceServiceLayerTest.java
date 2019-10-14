@@ -61,10 +61,14 @@ public class InvoiceServiceLayerTest {
         doReturn(invoice).when(invoiceDao).addInvoice(invoice1);
         doReturn(invoice).when(invoiceDao).getInvoice(4);
 
+        doReturn(invoiceList).when(invoiceDao).getInvoiceByCustomerId(3);
+
         doNothing().when(invoiceDao).updateInvoice(invoice2, invoice2.getInvoiceId());
         doReturn(invoice2).when(invoiceDao).getInvoice(7);
 
         doReturn(invoiceList).when(invoiceDao).getAllInvoices();
+
+
 
         doNothing().when(invoiceDao).deleteInvoice(1);
         doReturn(null).when(invoiceDao).getInvoice(1);
@@ -113,10 +117,11 @@ public class InvoiceServiceLayerTest {
         doReturn(invoiceItemViewModel).when(invoiceItemServiceLayer).saveInvoiceItem(invoiceItemViewModel1);
         doReturn(invoiceItemViewModel).when(invoiceItemServiceLayer).findInvoiceItem(2);
         doReturn(invoiceItemViewModels).when(invoiceItemServiceLayer).findAllInvoiceItemByInvoiceId(4);
+        doReturn(invoiceItemViewModelList).when(invoiceItemServiceLayer).findAllInvoiceItemByInvoiceId(7);
 
         doReturn(invoiceItemViewModel2).when(invoiceItemServiceLayer).saveInvoiceItem(invoiceItemViewModel3);
         doReturn(invoiceItemViewModel2).when(invoiceItemServiceLayer).findInvoiceItem(7);
-        doReturn(invoiceItemViewModelList).when(invoiceItemServiceLayer).findAllInvoiceItemByInvoiceId(7);
+
 
 
         doNothing().when(invoiceItemServiceLayer).updateInvoiceItem(invoiceItemViewModel2);
@@ -202,6 +207,38 @@ public class InvoiceServiceLayerTest {
 
 
 
+
+
+
+
+    }
+
+    @Test
+    public void findInvoicesByCustomerId() throws QueueRequestTimeoutException {
+
+        Invoice invoice1 = new Invoice();
+        invoice1.setCustomerId(3);
+        invoice1.setPurchaseDate(LocalDate.of(2012, 12, 12));
+
+        InvoiceItemViewModel invoiceItemViewModel = new InvoiceItemViewModel();
+        invoiceItemViewModel.setInvoiceId(4);
+        invoiceItemViewModel.setInventoryId(12);
+        invoiceItemViewModel.setQuantity(20);
+        invoiceItemViewModel.setUnitPrice(new BigDecimal("11.01"));
+
+        List<InvoiceItemViewModel> invoiceItemViewModels = new ArrayList<>();
+        invoiceItemViewModels.add(invoiceItemViewModel);
+
+        InvoiceViewModel invoiceViewModel = new InvoiceViewModel();
+        invoiceViewModel.setCustomerId(3);
+        invoiceViewModel.setPurchaseDate(LocalDate.of(2012, 12, 12));
+        invoiceViewModel.setInvoiceItems(invoiceItemViewModels);
+
+        invoiceViewModel = invoiceServiceLayer.saveInvoice(invoiceViewModel);
+
+        List<InvoiceViewModel> fromService = invoiceServiceLayer.findInvoicesByCustomerId(invoice1.getCustomerId());
+
+        assertEquals(1, fromService.size());
 
 
 

@@ -201,6 +201,33 @@ public class InvoiceServiceLayer {
     }
 
 
+    public List<InvoiceViewModel> findInvoicesByCustomerId(int customerId){
+
+        List<Invoice> invoices = invoiceDao.getInvoiceByCustomerId(customerId);
+
+        List<InvoiceViewModel> invoiceViewModels = new ArrayList<>();
+
+        for(Invoice i: invoices){
+
+            InvoiceViewModel invoiceViewModel = new InvoiceViewModel();
+            invoiceViewModel.setInvoiceId(i.getInvoiceId());
+            invoiceViewModel.setCustomerId(i.getCustomerId());
+            invoiceViewModel.setPurchaseDate(i.getPurchaseDate());
+
+            List<InvoiceItemViewModel> invoiceItemViewModels = invoiceItemServiceLayer.findAllInvoiceItemByInvoiceId(invoiceViewModel.getInvoiceId());
+
+            invoiceViewModel.setInvoiceItems(invoiceItemViewModels);
+
+            invoiceViewModels.add(invoiceViewModel);
+        }
+
+
+        return invoiceViewModels;
+
+
+    }
+
+
 }
 
 

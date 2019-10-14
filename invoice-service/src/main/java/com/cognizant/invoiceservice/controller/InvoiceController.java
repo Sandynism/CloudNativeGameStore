@@ -81,4 +81,15 @@ public class InvoiceController {
         serviceLayer.updateInvoice(invoiceViewModel, invoiceId);
     }
 
+    @GetMapping("/customer/{customerId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<InvoiceViewModel> getInvoiceByCustomerId(@PathVariable int customerId) {
+
+        List<InvoiceViewModel> invoiceViewModels = serviceLayer.findInvoicesByCustomerId(customerId);
+
+        if (invoiceViewModels != null && invoiceViewModels.size() == 0)
+            throw new NotFoundException("we don't have any invoice for this customer");
+        return invoiceViewModels;
+    }
+
 }
