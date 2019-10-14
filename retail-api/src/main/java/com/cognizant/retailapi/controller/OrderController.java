@@ -15,20 +15,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CacheConfig
+//@CacheConfig
 public class OrderController {
 
     @Autowired
     ServiceLayer serviceLayer;
 
-    @CachePut(cacheNames = {"invoices"}, key = "#result.getInvoiceId()")
+//    @CachePut(cacheNames = {"invoices"}, key = "#result.getInvoiceId()")
     @RequestMapping(value = "/invoices", method = RequestMethod.POST)
     public OrderViewModel submitInvoice(@RequestBody InvoiceViewModel invoiceViewModel) {
 
         return serviceLayer.saveOrder(invoiceViewModel);
     }
 
-    @Cacheable(cacheNames = {"invoices"})
+//    @Cacheable(cacheNames = {"invoices"})
     @RequestMapping(value = "/invoices/{invoiceId}", method = RequestMethod.GET)
     public OrderViewModel getInvoiceById(@PathVariable int invoiceId) {
 
@@ -75,7 +75,7 @@ public class OrderController {
         return productViewModels;
     }
 
-    @Cacheable(cacheNames = {"products"})
+//    @Cacheable(cacheNames = {"products"})
     @RequestMapping(value = "/products/{productId}", method = RequestMethod.GET)
     public ProductViewModel getProductById(@PathVariable int productId) {
 
@@ -138,7 +138,7 @@ public class OrderController {
         serviceLayer.updateProduct(productViewModel, productId);
     }
 
-    @CacheEvict(cacheNames = {"products"})
+//    @CacheEvict(cacheNames = {"products"})
     @RequestMapping(value = "/products/{productId}", method = RequestMethod.DELETE)
     public void deleteProduct(@PathVariable int productId) {
 
