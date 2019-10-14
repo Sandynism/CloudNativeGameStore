@@ -78,9 +78,9 @@ public class LevelUpController {
 
         LevelUpViewModel levelUpViewModel = serviceLayer.findLevelUpByCustomerId(customerId);
 
-        if (levelUpViewModel == null)
-
-            throw new NotFoundException("Sorry! we don't have this customer id no. " + customerId);
+//        if (levelUpViewModel == null)
+//
+//            throw new NotFoundException("Sorry! we don't have this customer id no. " + customerId);
 
         return levelUpViewModel;
     }

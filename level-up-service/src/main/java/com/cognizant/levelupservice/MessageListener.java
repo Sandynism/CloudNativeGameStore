@@ -19,27 +19,27 @@ public class MessageListener {
     public void receiveMessage(LevelUp msg) {
 
         System.out.println("Incoming message: " + msg.toString());
-//        try {
-//            if (msg.getLevelUpId() == 0) {
-//                LevelUpViewModel levelUpViewModel = new LevelUpViewModel();
-//                levelUpViewModel.setCustomerId(msg.getCustomerId());
-//                levelUpViewModel.setMemberDate(msg.getMemberDate());
-//                levelUpViewModel.setPoints(msg.getPoints());
-//                levelUpViewModel = serviceLayer.saveLevelUp(levelUpViewModel);
-//                System.out.println("LevelUp added: " + levelUpViewModel.toString());
-//            } else {
-//                LevelUpViewModel levelUpViewModel = new LevelUpViewModel();
-//                levelUpViewModel.setLevelUpId(msg.getLevelUpId());
-//                levelUpViewModel.setCustomerId(msg.getCustomerId());
-//                levelUpViewModel.setMemberDate(msg.getMemberDate());
-//                levelUpViewModel.setPoints(msg.getPoints());
-//                serviceLayer.updateLevelUp(levelUpViewModel);
-//
-//                System.out.println("LevelUp updated: " + levelUpViewModel.toString());
-//            }
-//        } catch (Exception e) {
-//            System.out.println("There is an exception: " + e.getMessage());
-//        }
+        try {
+            if (msg.getLevelUpId() == null) {
+                LevelUpViewModel levelUpViewModel = new LevelUpViewModel();
+                levelUpViewModel.setCustomerId(msg.getCustomerId());
+                levelUpViewModel.setMemberDate(msg.getMemberDate());
+                levelUpViewModel.setPoints(msg.getPoints());
+                levelUpViewModel = serviceLayer.saveLevelUp(levelUpViewModel);
+                System.out.println("LevelUp added: " + levelUpViewModel.toString());
+            } else {
+                LevelUpViewModel levelUpViewModel = new LevelUpViewModel();
+                levelUpViewModel.setLevelUpId(msg.getLevelUpId());
+                levelUpViewModel.setCustomerId(msg.getCustomerId());
+                levelUpViewModel.setMemberDate(msg.getMemberDate());
+                levelUpViewModel.setPoints(msg.getPoints());
+                serviceLayer.updateLevelUp(levelUpViewModel);
+
+                System.out.println("LevelUp updated: " + levelUpViewModel.toString());
+            }
+        } catch (Exception e) {
+            System.out.println("There is an exception: " + e.getMessage());
+        }
     }
 
 

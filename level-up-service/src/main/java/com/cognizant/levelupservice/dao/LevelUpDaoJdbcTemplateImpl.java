@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
 @Repository
 public class LevelUpDaoJdbcTemplateImpl implements LevelUpDao {
 
@@ -96,7 +97,13 @@ public class LevelUpDaoJdbcTemplateImpl implements LevelUpDao {
 
     @Override
     public LevelUp getLevelUpByCustomerId(int customerId) {
-        return jdbcTemplate.queryForObject(SELECT_LEVEL_UP_BY_CUSTOMER_ID_SQL, this::mapRowToLevelUp, customerId);
+        try {
+
+            return jdbcTemplate.queryForObject(SELECT_LEVEL_UP_BY_CUSTOMER_ID_SQL, this::mapRowToLevelUp, customerId);
+
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     private LevelUp mapRowToLevelUp(ResultSet rs, int rowNum) throws SQLException {
