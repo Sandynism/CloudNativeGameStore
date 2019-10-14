@@ -3,7 +3,7 @@ package com.cognizant.retailapi.service;
 import com.cognizant.retailapi.exception.NotFoundException;
 import com.cognizant.retailapi.model.*;
 import com.cognizant.retailapi.util.feign.*;
-import com.cognizant.retailapi.util.feign.message.LevelUpEntry;
+import com.cognizant.retailapi.util.feign.message.LevelUp;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,29 +89,32 @@ public class ServiceLayer {
 
             if (levelUpViewModel == null) {
 
-                LevelUpEntry msg = new LevelUpEntry();
+                LevelUp msg = new LevelUp();
                 msg.setCustomerId(invoiceViewModel.getCustomerId());
-                msg.setMemberDate(invoiceViewModel.getPurchaseDate());
                 msg.setPoints(0);
+                msg.setMemberDate(invoiceViewModel.getPurchaseDate());
 
                 rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, msg);
 
+                levelUpViewModel = levelUpClient.getLevelUpByCustomerId(invoiceViewModel.getCustomerId());
+
             }
 
-            levelUpViewModel.setPoints((Integer.divideUnsigned(total.intValue(),50))*10);
+            levelUpViewModel.setPoints((Integer.divideUnsigned(total.intValue(), 50)) * 10);
 
-            LevelUpEntry msg = new LevelUpEntry();
+            LevelUp msg = new LevelUp();
             msg.setLevelUpId(levelUpViewModel.getLevelUpId());
             msg.setCustomerId(levelUpViewModel.getCustomerId());
-            msg.setMemberDate(levelUpViewModel.getMemberDate());
             msg.setPoints(levelUpViewModel.getPoints());
+            msg.setMemberDate(levelUpViewModel.getMemberDate());
 
             rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, msg);
+            System.out.println("LEVELUP: " + msg.toString());
 
             orderViewModel.setInvoiceId(invoiceViewModel1.getInvoiceId());
             orderViewModel.setCustomerId(invoiceViewModel1.getCustomerId());
-            orderViewModel.setPurchaseDate(invoiceViewModel1.getPurchaseDate());
             orderViewModel.setLevelUpPoints(levelUpViewModel.getPoints());
+            orderViewModel.setPurchaseDate(invoiceViewModel1.getPurchaseDate());
             orderViewModel.setTotal(total);
 
             orderViewModel.setInvoiceItems((invoiceViewModel1.getInvoiceItems()));
@@ -124,7 +127,7 @@ public class ServiceLayer {
     }
 
 
-    public OrderViewModel findOrder(int invoiceId){
+    public OrderViewModel findOrder(int invoiceId) {
 
         final BigDecimal[] total = {BigDecimal.valueOf(0.00)};
 
@@ -139,11 +142,11 @@ public class ServiceLayer {
         LevelUpViewModel levelUpViewModel = levelUpClient.getLevelUpByCustomerId(invoiceViewModel.getCustomerId());
 
         orderViewModel.setLevelUpPoints(levelUpViewModel.getPoints());
-        orderViewModel.getInvoiceItems().stream().forEach(invoiceItemViewModel ->{
+        orderViewModel.getInvoiceItems().stream().forEach(invoiceItemViewModel -> {
 
-                orderViewModel.setTotal((invoiceItemViewModel.getUnitPrice()).multiply(new BigDecimal(invoiceItemViewModel.getQuantity()).setScale(2, RoundingMode.HALF_UP)));
+            orderViewModel.setTotal((invoiceItemViewModel.getUnitPrice()).multiply(new BigDecimal(invoiceItemViewModel.getQuantity()).setScale(2, RoundingMode.HALF_UP)));
 
-                total[0] = total[0].add(orderViewModel.getTotal());
+            total[0] = total[0].add(orderViewModel.getTotal());
         });
 
         orderViewModel.setTotal(total[0]);
@@ -152,13 +155,13 @@ public class ServiceLayer {
 
     }
 
-    public List<OrderViewModel> findAllOrder(){
+    public List<OrderViewModel> findAllOrder() {
 
         List<InvoiceViewModel> invoiceViewModelList = invoiceClient.getAllInvoices();
 
         List<OrderViewModel> orderViewModels = new ArrayList<>();
 
-        for(InvoiceViewModel i: invoiceViewModelList){
+        for (InvoiceViewModel i : invoiceViewModelList) {
 
             orderViewModels.add(findOrder(i.getInvoiceId()));
 
@@ -168,13 +171,13 @@ public class ServiceLayer {
     }
 
 
-    public List<OrderViewModel> findOrdersByCustomerId(int customerId){
+    public List<OrderViewModel> findOrdersByCustomerId(int customerId) {
 
         List<InvoiceViewModel> invoiceViewModelList = invoiceClient.getInvoiceByCustomerId(customerId);
 
         List<OrderViewModel> orderViewModels = new ArrayList<>();
 
-        for(InvoiceViewModel i: invoiceViewModelList){
+        for (InvoiceViewModel i : invoiceViewModelList) {
 
             orderViewModels.add(findOrder(i.getInvoiceId()));
 
@@ -184,7 +187,7 @@ public class ServiceLayer {
 
     }
 
-    public InventoryViewModel saveInventory (InventoryViewModel inventoryViewModel){
+    public InventoryViewModel saveInventory(InventoryViewModel inventoryViewModel) {
 
         InventoryViewModel inventoryViewModel1 = inventoryClient.createInventory(inventoryViewModel);
 
@@ -192,7 +195,7 @@ public class ServiceLayer {
         return inventoryViewModel1;
     }
 
-    public List<ProductViewModel> getProductsInInventory (){
+    public List<ProductViewModel> getProductsInInventory() {
 
         List<ProductViewModel> productViewModels = new ArrayList<>();
 
@@ -209,7 +212,7 @@ public class ServiceLayer {
 
     }
 
-    public ProductViewModel saveProduct(ProductViewModel productViewModel){
+    public ProductViewModel saveProduct(ProductViewModel productViewModel) {
 
         ProductViewModel productViewModel1 = productClient.createProduct(productViewModel);
 
@@ -217,13 +220,13 @@ public class ServiceLayer {
     }
 
 
-    public ProductViewModel getProduct (int productId){
+    public ProductViewModel getProduct(int productId) {
 
-     return productClient.getProduct(productId);
+        return productClient.getProduct(productId);
 
     }
 
-    public List<ProductViewModel> getProductByInvoiceId (int invoiceId){
+    public List<ProductViewModel> getProductByInvoiceId(int invoiceId) {
 
 
         List<ProductViewModel> productViewModels = new ArrayList<>();
@@ -233,7 +236,7 @@ public class ServiceLayer {
 
         invoiceViewModel.getInvoiceItems().forEach(invoiceItemViewModel -> {
 
-            InventoryViewModel inventoryViewModel =  inventoryClient.getInventory(invoiceItemViewModel.getInventoryId());
+            InventoryViewModel inventoryViewModel = inventoryClient.getInventory(invoiceItemViewModel.getInventoryId());
 
             ProductViewModel productViewModel = productClient.getProduct(inventoryViewModel.getProductId());
 
@@ -245,34 +248,34 @@ public class ServiceLayer {
         return productViewModels;
     }
 
-    public LevelUpViewModel saveLevelUp (LevelUpViewModel levelUpViewModel){
+    public LevelUpViewModel saveLevelUp(LevelUpViewModel levelUpViewModel) {
 
         LevelUpViewModel levelUpViewModel1 = levelUpClient.createLevelUp(levelUpViewModel);
 
         return levelUpViewModel1;
     }
 
-    public int getLevelUpPointsByCustomerId(int customerId){
+    public int getLevelUpPointsByCustomerId(int customerId) {
 
         LevelUpViewModel levelUpViewModel = levelUpClient.getLevelUpByCustomerId(customerId);
 
         return levelUpViewModel.getPoints();
     }
 
-    public List<ProductViewModel> getAllProducts(){
+    public List<ProductViewModel> getAllProducts() {
 
         return productClient.getAllProducts();
 
     }
 
-    public void updateProduct(ProductViewModel productViewModel, int productId){
+    public void updateProduct(ProductViewModel productViewModel, int productId) {
 
         productClient.updateProduct(productViewModel, productId);
 
 
     }
 
-    public void deleteProduct(int productId){
+    public void deleteProduct(int productId) {
 
         productClient.deleteProduct(productId);
 

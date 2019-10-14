@@ -74,7 +74,7 @@ public class ServiceLayerTest {
         doReturn(levelUpList).when(levelUpDao).getAllLevelUps();
 
         // LevelUp by customer id
-        doReturn(levelUp).when(levelUpDao).getLevelUpByCustomerId(2);
+        doReturn(null).when(levelUpDao).getLevelUpByCustomerId(2);
 
     }
 

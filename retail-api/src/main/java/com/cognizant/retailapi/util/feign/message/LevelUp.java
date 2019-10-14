@@ -8,8 +8,9 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 
-public class LevelUpEntry implements Serializable {
+public class LevelUp implements Serializable {
 
     private Integer levelUpId;
     private Integer customerId;
@@ -52,8 +53,24 @@ public class LevelUpEntry implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LevelUp)) return false;
+        LevelUp levelUp = (LevelUp) o;
+        return Objects.equals(getLevelUpId(), levelUp.getLevelUpId()) &&
+                Objects.equals(getCustomerId(), levelUp.getCustomerId()) &&
+                Objects.equals(getPoints(), levelUp.getPoints()) &&
+                Objects.equals(getMemberDate(), levelUp.getMemberDate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getLevelUpId(), getCustomerId(), getPoints(), getMemberDate());
+    }
+
+    @Override
     public String toString() {
-        return "LevelUpEntry{" +
+        return "LevelUp{" +
                 "levelUpId=" + levelUpId +
                 ", customerId=" + customerId +
                 ", points=" + points +

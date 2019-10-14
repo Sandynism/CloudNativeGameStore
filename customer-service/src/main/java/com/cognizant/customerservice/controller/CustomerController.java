@@ -28,7 +28,7 @@ public class CustomerController {
         CustomerViewModel cvm = sl.getCustomer(customerId);
 
         if (cvm == null)
-            throw new NotFoundException("Customer with ID " + customerId + "does not exist.");
+            throw new NotFoundException("Customer with ID " + customerId + " does not exist.");
 
         return cvm;
     }

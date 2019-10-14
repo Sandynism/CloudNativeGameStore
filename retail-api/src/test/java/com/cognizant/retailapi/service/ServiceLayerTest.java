@@ -2,7 +2,7 @@ package com.cognizant.retailapi.service;
 
 import com.cognizant.retailapi.model.*;
 import com.cognizant.retailapi.util.feign.*;
-import com.cognizant.retailapi.util.feign.message.LevelUpEntry;
+import com.cognizant.retailapi.util.feign.message.LevelUp;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -223,7 +223,7 @@ public class ServiceLayerTest {
 
         rabbitTemplate = mock(RabbitTemplate.class);
 
-        LevelUpEntry msg = new LevelUpEntry();
+        LevelUp msg = new LevelUp();
         msg.setPoints(20);
 
         doNothing().when(rabbitTemplate).convertAndSend(EXCHANGE,ROUTING_KEY,msg);

@@ -1,6 +1,7 @@
 package com.cognizant.levelupservice.service;
 
 import com.cognizant.levelupservice.dao.LevelUpDao;
+import com.cognizant.levelupservice.exception.NotFoundException;
 import com.cognizant.levelupservice.model.LevelUp;
 import com.cognizant.levelupservice.viewModel.LevelUpViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,13 @@ public class ServiceLayer {
     @Transactional
     public LevelUpViewModel saveLevelUp (LevelUpViewModel levelUpViewModel){
 
-        LevelUp levelUp = new LevelUp();
-        levelUp = levelUpDao.getLevelUpByCustomerId(levelUpViewModel.getCustomerId());
+//        LevelUp levelUp = levelUpDao.getLevelUpByCustomerId(levelUpViewModel.getCustomerId());
+//
+//        if(levelUp != null) throw new IllegalArgumentException("this customer already has a level up account, account no. " + levelUp.getLevelUpId());
+//
+//        else {
 
-        if(levelUp !=null) throw new IllegalArgumentException("this customer already has a level up account, account no. "+ levelUp.getLevelUpId());
-
-        else {
-
-            levelUp = new LevelUp();
+            LevelUp levelUp = new LevelUp();
             levelUp.setCustomerId(levelUpViewModel.getCustomerId());
             levelUp.setPoints(levelUpViewModel.getPoints());
             levelUp.setMemberDate(levelUpViewModel.getMemberDate());
@@ -39,7 +39,7 @@ public class ServiceLayer {
             levelUp = levelUpDao.addLevelUp(levelUp);
 
             return buildLevelUpViewModel(levelUp);
-        }
+//        }
     }
 
 
@@ -97,14 +97,16 @@ public class ServiceLayer {
 
         LevelUp levelUp = levelUpDao.getLevelUpByCustomerId(customerId);
 
-        if(levelUp == null) throw new NoSuchElementException(String.format("no Level up with customer id %s", customerId));
-
+        if(levelUp == null)  {
+            return null;
+        } else {
             return buildLevelUpViewModel(levelUp);
+        }
 
     }
 
 
-    @Transactional
+//    @Transactional
     private LevelUpViewModel buildLevelUpViewModel(LevelUp levelUp){
 
         LevelUpViewModel levelUpViewModel = new LevelUpViewModel();

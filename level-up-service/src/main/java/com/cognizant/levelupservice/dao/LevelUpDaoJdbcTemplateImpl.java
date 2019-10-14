@@ -96,15 +96,13 @@ public class LevelUpDaoJdbcTemplateImpl implements LevelUpDao {
 
     @Override
     public LevelUp getLevelUpByCustomerId(int customerId) {
-
-
         return jdbcTemplate.queryForObject(SELECT_LEVEL_UP_BY_CUSTOMER_ID_SQL, this::mapRowToLevelUp, customerId);
     }
 
     private LevelUp mapRowToLevelUp(ResultSet rs, int rowNum) throws SQLException {
 
         LevelUp levelUp = new LevelUp();
-        levelUp.setLevelUpId(rs.getInt("Level_up_id"));
+        levelUp.setLevelUpId(rs.getInt("level_up_id"));
         levelUp.setCustomerId(rs.getInt("customer_id"));
         levelUp.setPoints(rs.getInt("points"));
         levelUp.setMemberDate(rs.getDate("member_date").toLocalDate());
