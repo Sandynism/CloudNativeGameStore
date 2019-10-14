@@ -44,7 +44,7 @@ public interface InvoiceClient {
 //    @GetMapping(value="/invoiceItems")
 //    List<InvoiceItem> getAllInvoiceItems();
 
-    @GetMapping(value="/invoiceItems/invoices/{invoiceId}")
+    @GetMapping(value="/invoiceItem/invoices/{invoiceId}")
     List<InvoiceItem> getInvoiceItemsByInvoiceId(@PathVariable(name="invoiceId") Integer invoiceId);
 
 //    @GetMapping(value="/invoiceItems/invoices/{invoiceId}")

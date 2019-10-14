@@ -52,7 +52,7 @@ public class ProductController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductViewModel> getAllProducts() {
+    public List<ProductViewModel> getAllProducts() throws NotFoundException {
         List<ProductViewModel> productList = sl.getAllProducts();
 
         if (productList != null && productList.size() == 0) {

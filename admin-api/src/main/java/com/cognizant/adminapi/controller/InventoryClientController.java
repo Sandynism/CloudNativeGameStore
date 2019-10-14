@@ -19,13 +19,13 @@ public class InventoryClientController {
     @Autowired
     ServiceLayer sl;
 
-    @PostMapping(value = "/inventory")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public InventoryViewModel createInventory(@RequestBody InventoryViewModel ivm) {
         return sl.createInventory(ivm);
     }
 
-    @GetMapping(value = "/inventory/{inventoryId}")
+    @GetMapping(value = "/{inventoryId}")
     @ResponseStatus(HttpStatus.OK)
     public InventoryViewModel getInventory(@PathVariable Integer inventoryId) {
         InventoryViewModel ivm = sl.getInventory(inventoryId);
@@ -36,7 +36,7 @@ public class InventoryClientController {
         return ivm;
     }
 
-    @PutMapping(value = "/inventory/{inventoryId}")
+    @PutMapping(value = "/{inventoryId}")
     @ResponseStatus(HttpStatus.OK)
     public void updateInventory(@RequestBody InventoryViewModel ivm, @PathVariable Integer inventoryId) {
         InventoryViewModel inventory = sl.getInventory(ivm.getInventoryId());
@@ -47,7 +47,7 @@ public class InventoryClientController {
         sl.updateInventory(ivm);
     }
 
-    @DeleteMapping(value = "/inventory/{inventoryId}")
+    @DeleteMapping(value = "/{inventoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteInventory(@PathVariable Integer inventoryId) {
         InventoryViewModel inventory = sl.getInventory(inventoryId);
@@ -58,7 +58,7 @@ public class InventoryClientController {
         sl.deleteInventory(inventoryId);
     }
 
-    @GetMapping(value = "/inventory")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<InventoryViewModel> getAllInventory() {
         List<InventoryViewModel> inventoryList = sl.getAllInventory();
@@ -69,7 +69,7 @@ public class InventoryClientController {
         return inventoryList;
     }
 
-    @GetMapping(value = "/inventory/product/{productId}")
+    @GetMapping(value = "/product/{productId}")
     @ResponseStatus(HttpStatus.OK)
     public List<InventoryViewModel> getAllInventoryByProductId(@PathVariable Integer productId) {
         List<InventoryViewModel> inventoryList = sl.getAllInventoryByProductId(productId);

@@ -27,7 +27,7 @@ public class ProductClientController {
 
     @GetMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductViewModel getProduct(@PathVariable(name="productId") Integer productId) {
+    public ProductViewModel getProduct(@PathVariable(name="productId") Integer productId) throws NoSuchProductException{
         ProductViewModel pvm = sl.getProduct(productId);
 
         if (pvm == null)
@@ -38,7 +38,7 @@ public class ProductClientController {
 
     @PutMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateProduct(@RequestBody ProductViewModel pvm, @PathVariable(name="productId") Integer productId) {
+    public void updateProduct(@RequestBody ProductViewModel pvm, @PathVariable(name="productId") Integer productId) throws NoSuchProductException{
         ProductViewModel product = sl.getProduct(pvm.getProductId());
 
         if (product == null)
@@ -49,7 +49,7 @@ public class ProductClientController {
 
     @DeleteMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteProduct(@PathVariable(name="productId") Integer productId) {
+    public void deleteProduct(@PathVariable(name="productId") Integer productId) throws NoSuchProductException{
         ProductViewModel product = sl.getProduct(productId);
 
         if (product == null)
@@ -60,7 +60,7 @@ public class ProductClientController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductViewModel> getAllProducts() {
+    public List<ProductViewModel> getAllProducts() throws NotFoundException {
         List<ProductViewModel> productList = sl.getAllProducts();
 
         if (productList != null && productList.size() == 0) {

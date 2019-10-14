@@ -4,6 +4,7 @@ import com.cognizant.adminapi.exception.*;
 import com.cognizant.adminapi.model.*;
 import com.cognizant.adminapi.util.feign.*;
 import feign.FeignException;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -172,9 +173,13 @@ public class ServiceLayer {
         productClient.deleteProduct(productId);
     }
 
-    public List<ProductViewModel> getAllProducts() {
+    public List<ProductViewModel> getAllProducts() throws NotFoundException {
         List<Product> productList = productClient.getAllProducts();
         List<ProductViewModel> pvmList = new ArrayList<>();
+
+        if(productList != null && productList.size() == 0) {
+            throw new NotFoundException("There are no available products.");
+        }
 
         for (Product p : productList) {
             pvmList.add(buildProductViewModel(p));
@@ -411,9 +416,33 @@ public class ServiceLayer {
         ivm.setInvoiceId(invoice.getInvoiceId());
         ivm.setCustomerId(invoice.getCustomerId());
         ivm.setPurchaseDate(invoice.getPurchaseDate());
-        ivm.setInvoiceItems(invoiceClient.getInvoiceItemsByInvoiceId(ivm.getInvoiceId()));
+
+        List<InvoiceItem> invoiceItems = invoiceClient.getInvoiceItemsByInvoiceId(invoice.getInvoiceId());
+        ivm.setInvoiceItems(invoiceItems);
 
         return ivm;
     }
 
+    public List<InvoiceItemViewModel> getInvoiceItemsByInvoiceId(Integer invoiceId) {
+        List<InvoiceItem> invoiceItemsList = invoiceClient.getInvoiceItemsByInvoiceId(invoiceId);
+        List<InvoiceItemViewModel> iivmList = new ArrayList<>();
+
+        for (InvoiceItem i : invoiceItemsList) {
+            iivmList.add(buildInvoiceItemViewModel(i));
+        }
+
+        return iivmList;
+    }
+
+    private InvoiceItemViewModel buildInvoiceItemViewModel(InvoiceItem invoiceItem) {
+        InvoiceItemViewModel iivm = new InvoiceItemViewModel();
+
+        iivm.setInvoiceItemId(invoiceItem.getInvoiceItemId());
+        iivm.setInvoiceId(invoiceItem.getInvoiceId());
+        iivm.setInventoryId(invoiceItem.getInventoryId());
+        iivm.setQuantity(invoiceItem.getQuantity());
+        iivm.setUnitPrice(invoiceItem.getUnitPrice());
+
+        return iivm;
+    }
 }

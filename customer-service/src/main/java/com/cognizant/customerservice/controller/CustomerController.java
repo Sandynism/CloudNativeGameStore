@@ -1,10 +1,8 @@
 package com.cognizant.customerservice.controller;
 
 import com.cognizant.customerservice.exception.NotFoundException;
-import com.cognizant.customerservice.model.Customer;
 import com.cognizant.customerservice.model.CustomerViewModel;
 import com.cognizant.customerservice.service.ServiceLayer;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

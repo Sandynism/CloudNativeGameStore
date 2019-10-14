@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "product-service")
+@FeignClient(name="product-service")
 public interface ProductClient {
 
     @PostMapping(value = "/products")

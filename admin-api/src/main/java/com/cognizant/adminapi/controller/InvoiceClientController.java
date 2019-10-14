@@ -20,7 +20,7 @@ public class InvoiceClientController {
 
     @GetMapping(value = "/{invoiceId}")
     @ResponseStatus(HttpStatus.OK)
-    public InvoiceViewModel getInvoice(@PathVariable Integer invoiceId) {
+    public InvoiceViewModel getInvoice(@PathVariable(name="invoiceId") Integer invoiceId) {
         InvoiceViewModel ivm = sl.getInvoice(invoiceId);
 
         if (ivm == null)
@@ -43,7 +43,7 @@ public class InvoiceClientController {
 
     @GetMapping(value = "/customer/{customerId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<InvoiceViewModel> getAllInvoicesByCustomerId(@PathVariable Integer customerId) {
+    public List<InvoiceViewModel> getAllInvoicesByCustomerId(@PathVariable(name="customerId") Integer customerId) {
         List<InvoiceViewModel> invoiceList = sl.getAllInvoicesByCustomerId(customerId);
 
         if (invoiceList != null && invoiceList.size() == 0) {
