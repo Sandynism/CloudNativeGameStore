@@ -25,16 +25,21 @@ public class ServiceLayer {
     public LevelUpViewModel saveLevelUp (LevelUpViewModel levelUpViewModel){
 
         LevelUp levelUp = new LevelUp();
-        levelUp.setCustomerId(levelUpViewModel.getCustomerId());
-        levelUp.setPoints(levelUpViewModel.getPoints());
-        levelUp.setMemberDate(levelUpViewModel.getMemberDate());
+        levelUp = levelUpDao.getLevelUpByCustomerId(levelUpViewModel.getCustomerId());
 
-        levelUp = levelUpDao.addLevelUp(levelUp);
+        if(levelUp !=null) throw new IllegalArgumentException("this customer already has a level up account, account no. "+ levelUp.getLevelUpId());
 
-//        levelUpViewModel.setLevelUpId(levelUp.getLevelUpId());
+        else {
 
-        return buildLevelUpViewModel(levelUp);
+            levelUp = new LevelUp();
+            levelUp.setCustomerId(levelUpViewModel.getCustomerId());
+            levelUp.setPoints(levelUpViewModel.getPoints());
+            levelUp.setMemberDate(levelUpViewModel.getMemberDate());
 
+            levelUp = levelUpDao.addLevelUp(levelUp);
+
+            return buildLevelUpViewModel(levelUp);
+        }
     }
 
 

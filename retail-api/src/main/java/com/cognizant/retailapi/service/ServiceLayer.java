@@ -102,6 +102,8 @@ public class ServiceLayer {
 
             LevelUpEntry msg = new LevelUpEntry();
             msg.setLevelUpId(levelUpViewModel.getLevelUpId());
+            msg.setCustomerId(levelUpViewModel.getCustomerId());
+            msg.setMemberDate(levelUpViewModel.getMemberDate());
             msg.setPoints(levelUpViewModel.getPoints());
 
             rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, msg);
