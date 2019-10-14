@@ -6,22 +6,29 @@ import com.cognizant.retailapi.model.OrderViewModel;
 import com.cognizant.retailapi.model.ProductViewModel;
 import com.cognizant.retailapi.service.ServiceLayer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CacheConfig
 public class OrderController {
 
     @Autowired
     ServiceLayer serviceLayer;
 
+    @CachePut(cacheNames = {"invoices"}, key = "#result.getInvoiceId()")
     @RequestMapping(value = "/invoices", method = RequestMethod.POST)
     public OrderViewModel submitInvoice(@RequestBody InvoiceViewModel invoiceViewModel) {
 
         return serviceLayer.saveOrder(invoiceViewModel);
     }
 
+    @Cacheable(cacheNames = {"invoices"})
     @RequestMapping(value = "/invoices/{invoiceId}", method = RequestMethod.GET)
     public OrderViewModel getInvoiceById(@PathVariable int invoiceId) {
 
@@ -68,6 +75,7 @@ public class OrderController {
         return productViewModels;
     }
 
+    @Cacheable(cacheNames = {"products"})
     @RequestMapping(value = "/products/{productId}", method = RequestMethod.GET)
     public ProductViewModel getProductById(@PathVariable int productId) {
 
@@ -130,6 +138,7 @@ public class OrderController {
         serviceLayer.updateProduct(productViewModel, productId);
     }
 
+    @CacheEvict(cacheNames = {"products"})
     @RequestMapping(value = "/products/{productId}", method = RequestMethod.DELETE)
     public void deleteProduct(@PathVariable int productId) {
 
