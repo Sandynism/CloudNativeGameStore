@@ -2,9 +2,10 @@ package com.cognizant.levelupservice.utill.message;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class LevelUpEntry {
+public class LevelUpEntry implements Serializable {
 
     private Integer levelUpId;
     private Integer customerId;

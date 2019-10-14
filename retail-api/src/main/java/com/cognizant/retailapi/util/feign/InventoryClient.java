@@ -2,10 +2,7 @@ package com.cognizant.retailapi.util.feign;
 
 import com.cognizant.retailapi.model.InventoryViewModel;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -13,20 +10,20 @@ import java.util.List;
 public interface InventoryClient {
 
     @PostMapping(value ="/inventory")
-    InventoryViewModel createInventory(InventoryViewModel inventoryViewModel);
+    InventoryViewModel createInventory(@RequestBody InventoryViewModel inventoryViewModel);
 
     @GetMapping(value="/inventory/{inventoryId}")
-    InventoryViewModel getInventory(Integer inventoryId);
+    InventoryViewModel getInventory(@PathVariable Integer inventoryId);
 
     @PutMapping(value="/inventory/{inventoryId}")
-    void updateInventory(InventoryViewModel inventoryViewModel, Integer inventoryId);
+    void updateInventory(@RequestBody InventoryViewModel inventoryViewModel, @PathVariable Integer inventoryId);
 
     @DeleteMapping(value="/inventory/{inventoryId}")
-    void deleteInventory(Integer inventoryId);
+    void deleteInventory(@PathVariable Integer inventoryId);
 
     @GetMapping(value="/inventory")
     List<InventoryViewModel> getAllInventory();
 
     @GetMapping(value="/inventory/product/{productId}")
-    List<InventoryViewModel> getAllInventoryByProductId(Integer productId);
+    List<InventoryViewModel> getAllInventoryByProductId(@PathVariable Integer productId);
 }
