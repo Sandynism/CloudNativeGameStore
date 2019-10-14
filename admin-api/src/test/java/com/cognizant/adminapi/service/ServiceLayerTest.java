@@ -378,17 +378,21 @@ public class ServiceLayerTest {
     //INVOICE SERVICE
     @Test
     public void getInvoice() {
-
+        InvoiceViewModel invoice = sl.getInvoice(1);
+        assertNotNull(invoice);
     }
 
     @Test
     public void getAllInvoices() {
+        List<InvoiceViewModel> invoiceList = sl.getAllInvoices();
+        assertEquals(invoiceList.size(), 2);
 
     }
 
     @Test
     public void getAllInvoicesByCustomerId() {
-
+        List<InvoiceViewModel> customerInvoices = sl.getAllInvoicesByCustomerId(3);
+        assertEquals(customerInvoices.size(), 1);
     }
 
 
