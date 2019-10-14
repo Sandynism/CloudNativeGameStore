@@ -8,7 +8,7 @@ public class InvoiceItem {
 
     private Integer invoiceItemId;
     private Integer invoiceId;
-    private Integer InventoryId;
+    private Integer inventoryId;
     private Integer quantity;
     private BigDecimal unitPrice;
 
@@ -29,11 +29,11 @@ public class InvoiceItem {
     }
 
     public Integer getInventoryId() {
-        return InventoryId;
+        return inventoryId;
     }
 
     public void setInventoryId(Integer inventoryId) {
-        InventoryId = inventoryId;
+        this.inventoryId = inventoryId;
     }
 
     public Integer getQuantity() {

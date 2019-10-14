@@ -5,34 +5,34 @@ import java.util.Objects;
 
 public class InvoiceItemViewModel {
 
-    private Integer InvoiceItemId;
-    private Integer InvoiceId;
-    private Integer InventoryId;
+    private Integer invoiceItemId;
+    private Integer invoiceId;
+    private Integer inventoryId;
     private Integer quantity;
     private BigDecimal unitPrice;
 
     public Integer getInvoiceItemId() {
-        return InvoiceItemId;
+        return invoiceItemId;
     }
 
     public void setInvoiceItemId(Integer invoiceItemId) {
-        InvoiceItemId = invoiceItemId;
+        this.invoiceItemId = invoiceItemId;
     }
 
     public Integer getInvoiceId() {
-        return InvoiceId;
+        return invoiceId;
     }
 
     public void setInvoiceId(Integer invoiceId) {
-        InvoiceId = invoiceId;
+        this.invoiceId = invoiceId;
     }
 
     public Integer getInventoryId() {
-        return InventoryId;
+        return inventoryId;
     }
 
     public void setInventoryId(Integer inventoryId) {
-        InventoryId = inventoryId;
+        this.inventoryId = inventoryId;
     }
 
     public Integer getQuantity() {
@@ -56,15 +56,15 @@ public class InvoiceItemViewModel {
         if (this == o) return true;
         if (!(o instanceof InvoiceItemViewModel)) return false;
         InvoiceItemViewModel that = (InvoiceItemViewModel) o;
-        return Objects.equals(InvoiceItemId, that.InvoiceItemId) &&
-                Objects.equals(InvoiceId, that.InvoiceId) &&
-                Objects.equals(InventoryId, that.InventoryId) &&
+        return Objects.equals(invoiceItemId, that.invoiceItemId) &&
+                Objects.equals(invoiceId, that.invoiceId) &&
+                Objects.equals(inventoryId, that.inventoryId) &&
                 Objects.equals(quantity, that.quantity) &&
                 Objects.equals(unitPrice, that.unitPrice);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(InvoiceItemId, InvoiceId, InventoryId, quantity, unitPrice);
+        return Objects.hash(invoiceItemId, invoiceId, inventoryId, quantity, unitPrice);
     }
 }

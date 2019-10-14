@@ -100,8 +100,6 @@ public class OrderController {
     }
 
 
-    // getProductById is above in the Retail endpoints
-
     @RequestMapping(value = "/products", method = RequestMethod.GET)
     public List<ProductViewModel> getAllProducts() {
 
