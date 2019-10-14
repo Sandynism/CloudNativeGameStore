@@ -4,7 +4,7 @@ import com.cognizant.retailapi.exception.NotFoundException;
 import com.cognizant.retailapi.model.*;
 import com.cognizant.retailapi.util.feign.*;
 import com.cognizant.retailapi.util.feign.message.LevelUpEntry;
-import org.apache.tomcat.jni.Proc;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,14 +14,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Component
 public class ServiceLayer {
 
     public static final String EXCHANGE = "levelUp-exchange";
-    public static final String ROUTING_KEY_ADD = "levelUp.add.retail.service";
-    public static final String ROUTING_KEY_UPDATE = "levelUp.update.retail.service";
+    public static final String ROUTING_KEY = "levelUp.add.retail.service";
 
     private CustomerClient customerClient;
     private ProductClient productClient;
@@ -95,16 +94,17 @@ public class ServiceLayer {
                 msg.setMemberDate(invoiceViewModel.getPurchaseDate());
                 msg.setPoints(0);
 
-                rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_ADD, msg);
+                rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, msg);
 
             }
 
             levelUpViewModel.setPoints((Integer.divideUnsigned(total.intValue(),50))*10);
 
             LevelUpEntry msg = new LevelUpEntry();
+            msg.setLevelUpId(levelUpViewModel.getLevelUpId());
             msg.setPoints(levelUpViewModel.getPoints());
 
-            rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_UPDATE, msg);
+            rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, msg);
 
             orderViewModel.setInvoiceId(invoiceViewModel1.getInvoiceId());
             orderViewModel.setCustomerId(invoiceViewModel1.getCustomerId());

@@ -3,7 +3,6 @@ package com.cognizant.retailapi.service;
 import com.cognizant.retailapi.model.*;
 import com.cognizant.retailapi.util.feign.*;
 import com.cognizant.retailapi.util.feign.message.LevelUpEntry;
-import org.apache.catalina.servlets.DefaultServlet;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -19,8 +18,8 @@ import static org.mockito.Mockito.*;
 public class ServiceLayerTest {
 
     public static final String EXCHANGE = "levelUp-exchange";
-    public static final String ROUTING_KEY_ADD = "levelUp.add.retail.service";
-    public static final String ROUTING_KEY_UPDATE = "levelUp.update.retail.service";
+    public static final String ROUTING_KEY = "levelUp.add.retail.service";
+
 
     private CustomerClient customerClient;
     private ProductClient productClient;
@@ -83,6 +82,7 @@ public class ServiceLayerTest {
 
         List<ProductViewModel> productViewModels = new ArrayList<>();
         productViewModels.add(productViewModel);
+        productViewModels.add(productViewModel1);
 
         doReturn(productViewModel).when(productClient).getProduct(4);
         doReturn(productViewModel1).when(productClient).getProduct(6);
@@ -226,7 +226,7 @@ public class ServiceLayerTest {
         LevelUpEntry msg = new LevelUpEntry();
         msg.setPoints(20);
 
-        doNothing().when(rabbitTemplate).convertAndSend(EXCHANGE,ROUTING_KEY_UPDATE,msg);
+        doNothing().when(rabbitTemplate).convertAndSend(EXCHANGE,ROUTING_KEY,msg);
 
 
     }
