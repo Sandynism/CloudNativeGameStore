@@ -3,7 +3,9 @@ package com.cognizant.levelupservice;
 import com.cognizant.levelupservice.dao.LevelUpDao;
 
 import com.cognizant.levelupservice.model.LevelUp;
+import com.cognizant.levelupservice.service.ServiceLayer;
 import com.cognizant.levelupservice.utill.message.LevelUpEntry;
+import com.cognizant.levelupservice.viewModel.LevelUpViewModel;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class MessageListener {
 
     @Autowired
-    LevelUpDao levelUpDao;
+    ServiceLayer serviceLayer;
 
     @RabbitListener(queues = LevelUpServiceApplication.QUEUE_NAME)
     public void receiveMessage(LevelUpEntry msg) {
@@ -20,20 +22,21 @@ public class MessageListener {
         System.out.println("Incoming message: " + msg.toString());
         try {
             if (msg.getLevelUpId() == 0) {
-                LevelUp levelUp = new LevelUp();
-                levelUp.setCustomerId(msg.getCustomerId());
-                levelUp.setMemberDate(msg.getMemberDate());
-                levelUp.setPoints(msg.getPoints());
-                levelUpDao.addLevelUp(levelUp);
-                System.out.println("LevelUp added: " + levelUp.toString());
+                LevelUpViewModel levelUpViewModel = new LevelUpViewModel();
+                levelUpViewModel.setCustomerId(msg.getCustomerId());
+                levelUpViewModel.setMemberDate(msg.getMemberDate());
+                levelUpViewModel.setPoints(msg.getPoints());
+                levelUpViewModel = serviceLayer.saveLevelUp(levelUpViewModel);
+                System.out.println("LevelUp added: " + levelUpViewModel.toString());
             } else {
-                LevelUp levelUp = new LevelUp();
-                levelUp.setLevelUpId(msg.getLevelUpId());
-                levelUp.setPoints(msg.getPoints());
+                LevelUpViewModel levelUpViewModel = new LevelUpViewModel();
+                levelUpViewModel.setLevelUpId(msg.getLevelUpId());
+                levelUpViewModel.setCustomerId(msg.getCustomerId());
+                levelUpViewModel.setMemberDate(msg.getMemberDate());
+                levelUpViewModel.setPoints(msg.getPoints());
+                serviceLayer.updateLevelUp(levelUpViewModel);
 
-                levelUpDao.updateLevelUp(levelUp, levelUp.getLevelUpId());
-
-                System.out.println("LevelUp updated: " + levelUp.toString());
+                System.out.println("LevelUp updated: " + levelUpViewModel.toString());
             }
         } catch (Exception e) {
             System.out.println("There is an exception: " + e.getMessage());
