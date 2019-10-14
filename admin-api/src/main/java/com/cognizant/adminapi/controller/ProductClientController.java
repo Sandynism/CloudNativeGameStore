@@ -2,7 +2,6 @@ package com.cognizant.adminapi.controller;
 
 import com.cognizant.adminapi.exception.NoSuchProductException;
 import com.cognizant.adminapi.exception.NotFoundException;
-import com.cognizant.adminapi.model.Product;
 import com.cognizant.adminapi.service.ServiceLayer;
 import com.cognizant.adminapi.model.ProductViewModel;
 import org.springframework.beans.factory.annotation.Autowired;

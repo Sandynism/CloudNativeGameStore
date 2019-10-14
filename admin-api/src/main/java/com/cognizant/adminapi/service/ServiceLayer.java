@@ -4,13 +4,11 @@ import com.cognizant.adminapi.exception.*;
 import com.cognizant.adminapi.model.*;
 import com.cognizant.adminapi.util.feign.*;
 import feign.FeignException;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class ServiceLayer {
@@ -21,23 +19,15 @@ public class ServiceLayer {
     InventoryClient inventoryClient;
     InvoiceClient invoiceClient;
 
-//    @Autowired
-//    public ServiceLayer(CustomerClient customerClient, ProductClient productClient, LevelUpClient levelUpClient, InventoryClient inventoryClient, InvoiceClient invoiceClient) {
-//        this.customerClient = customerClient;
-//        this.productClient = productClient;
-//        this.levelUpClient = levelUpClient;
-//        this.inventoryClient = inventoryClient;
-//        this.invoiceClient = invoiceClient;
-//    }
-
     @Autowired
-    public ServiceLayer(CustomerClient customerClient, ProductClient productClient, LevelUpClient levelUpClient, InventoryClient inventoryClient) {
+    public ServiceLayer(CustomerClient customerClient, ProductClient productClient, LevelUpClient levelUpClient, InventoryClient inventoryClient, InvoiceClient invoiceClient) {
         this.customerClient = customerClient;
         this.productClient = productClient;
         this.levelUpClient = levelUpClient;
         this.inventoryClient = inventoryClient;
-//        this.invoiceClient = invoiceClient;
+        this.invoiceClient = invoiceClient;
     }
+
 
     //CUSTOMER SERVICE
     public CustomerViewModel createCustomer(CustomerViewModel cvm) {
@@ -377,5 +367,53 @@ public class ServiceLayer {
         return ivm;
     }
 
+
+    //INVOICE SERVICE
+    public InvoiceViewModel getInvoice(Integer invoiceId) throws NoSuchInvoiceException {
+        Invoice invoice;
+
+        try {
+            invoice = invoiceClient.getInvoice(invoiceId);
+        } catch (FeignException.NotFound fe) {
+            System.out.println("Invoice " + invoiceId + " could not be found. " + fe.getMessage());
+            throw new NoSuchInvoiceException(invoiceId);
+        }
+
+        return buildInvoiceViewModel(invoice);
+    }
+
+    public List<InvoiceViewModel> getAllInvoices() {
+        List<Invoice> invoiceList = invoiceClient.getAllInvoices();
+        List<InvoiceViewModel> ivmList = new ArrayList<>();
+
+        for (Invoice i : invoiceList) {
+            ivmList.add(buildInvoiceViewModel(i));
+        }
+
+        return ivmList;
+    }
+
+    public List<InvoiceViewModel> getAllInvoicesByCustomerId(Integer customerId) {
+        List<Invoice> invoiceList = invoiceClient.getInvoicesByCustomerId(customerId);
+        List<InvoiceViewModel> ivmList = new ArrayList<>();
+
+        for (Invoice i : invoiceList) {
+            ivmList.add(buildInvoiceViewModel(i));
+        }
+
+        return ivmList;
+    }
+
+
+    private InvoiceViewModel buildInvoiceViewModel(Invoice invoice) {
+        InvoiceViewModel ivm = new InvoiceViewModel();
+
+        ivm.setInvoiceId(invoice.getInvoiceId());
+        ivm.setCustomerId(invoice.getCustomerId());
+        ivm.setPurchaseDate(invoice.getPurchaseDate());
+        ivm.setInvoiceItems(invoiceClient.getInvoiceItemsByInvoiceId(ivm.getInvoiceId()));
+
+        return ivm;
+    }
 
 }

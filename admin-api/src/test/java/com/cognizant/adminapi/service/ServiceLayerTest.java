@@ -2,12 +2,11 @@ package com.cognizant.adminapi.service;
 
 import com.cognizant.adminapi.exception.NoSuchCustomerException;
 import com.cognizant.adminapi.model.*;
-import com.cognizant.adminapi.util.feign.CustomerClient;
-import com.cognizant.adminapi.util.feign.InventoryClient;
-import com.cognizant.adminapi.util.feign.LevelUpClient;
-import com.cognizant.adminapi.util.feign.ProductClient;
+import com.cognizant.adminapi.util.feign.*;
+import net.bytebuddy.build.ToStringPlugin;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.cglib.core.Local;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -37,24 +36,33 @@ public class ServiceLayerTest {
 
     private static final Integer LEVELUP_ID = 1;
     private static final LevelUp LEVELUP_INPUT1 = new LevelUp(1, 100, LocalDate.of(2012, 1, 1));
-    private static final LevelUp LEVELUP_OUTPUT1 = new LevelUp(1,1, 100, LocalDate.of(2012, 1, 1));
-    private static final LevelUp LEVELUP_OUTPUT2 = new LevelUp(2,2, 100, LocalDate.of(2019, 12, 12));
-    private static final LevelUp LEVELUP_OUTPUT3 = new LevelUp(3,3, 100, LocalDate.of(2017, 5, 10));
+    private static final LevelUp LEVELUP_OUTPUT1 = new LevelUp(1, 1, 100, LocalDate.of(2012, 1, 1));
+    private static final LevelUp LEVELUP_OUTPUT2 = new LevelUp(2, 2, 100, LocalDate.of(2019, 12, 12));
+    private static final LevelUp LEVELUP_OUTPUT3 = new LevelUp(3, 3, 100, LocalDate.of(2017, 5, 10));
     private static final LevelUpViewModel LVM_INPUT1 = new LevelUpViewModel(1, 100, LocalDate.of(2012, 1, 1));
-    private static final LevelUpViewModel LVM_OUTPUT3 = new LevelUpViewModel(3,3, 100, LocalDate.of(2017, 5, 10));
+    private static final LevelUpViewModel LVM_OUTPUT3 = new LevelUpViewModel(3, 3, 100, LocalDate.of(2017, 5, 10));
 
     private static final Integer INVENTORY_ID = 1;
-    private static final Inventory INVENTORY_INPUT1 = new Inventory( 1, 20);
-    private static final Inventory INVENTORY_OUTPUT1 = new Inventory(1,1, 20);
-    private static final Inventory INVENTORY_OUTPUT2 = new Inventory(2,2, 40);
-    private static final Inventory INVENTORY_OUTPUT3 = new Inventory(3,3, 60);
+    private static final Inventory INVENTORY_INPUT1 = new Inventory(1, 20);
+    private static final Inventory INVENTORY_OUTPUT1 = new Inventory(1, 1, 20);
+    private static final Inventory INVENTORY_OUTPUT2 = new Inventory(2, 2, 40);
+    private static final Inventory INVENTORY_OUTPUT3 = new Inventory(3, 3, 60);
     private static final InventoryViewModel INVENTORYVM_INPUT1 = new InventoryViewModel(1, 20);
-    private static final InventoryViewModel INVENTORYVM_OUTPUT3 = new InventoryViewModel(3,3, 60);
+    private static final InventoryViewModel INVENTORYVM_OUTPUT3 = new InventoryViewModel(3, 3, 60);
+
+    private static final Integer INVOICE_ID = 1;
+    private static final Invoice INVOICE_INPUT1 = new Invoice(1, LocalDate.of(2018, 1, 1));
+    private static final Invoice INVOICE_OUTPUT1 = new Invoice(1, 1, LocalDate.of(2018, 1, 1));
+    private static final Invoice INVOICE_OUTPUT2 = new Invoice(2, 2, LocalDate.of(2018, 2, 2));
+    private static final Invoice INVOICE_OUTPUT3 = new Invoice(3, 3, LocalDate.of(2018, 3, 3));
+    private static final InvoiceViewModel INVOICEVM_INPUT1 = new InvoiceViewModel(1, LocalDate.of(2018, 1, 1));
+    private static final InvoiceViewModel INVOICEVM_OUTPUT3 = new InvoiceViewModel(3, 3, LocalDate.of(2018, 3, 3));
 
     private CustomerClient customerClient;
     private ProductClient productClient;
     private LevelUpClient levelUpClient;
     private InventoryClient inventoryClient;
+    private InvoiceClient invoiceClient;
     private ServiceLayer sl;
 
     @Before
@@ -63,8 +71,9 @@ public class ServiceLayerTest {
         setUpProductClientMocks();
         setUpLevelUpClientMocks();
         setUpInventoryClientMocks();
+        setUpInvoiceClientMocks();
 
-        sl = new ServiceLayer(customerClient, productClient, levelUpClient, inventoryClient);
+        sl = new ServiceLayer(customerClient, productClient, levelUpClient, inventoryClient, invoiceClient);
     }
 
     private void setUpCustomerClientMocks() {
@@ -171,6 +180,26 @@ public class ServiceLayerTest {
         doReturn(findByProductList).when(inventoryClient).getAllInventoryByProductId(3);
     }
 
+    private void setUpInvoiceClientMocks() {
+        invoiceClient = mock(InvoiceClient.class);
+
+        //get by id
+        doReturn(INVOICE_OUTPUT1).when(invoiceClient).getInvoice(INVOICE_ID);
+
+        //get all
+        List<Invoice> iList = new ArrayList<>();
+        iList.add(INVOICE_OUTPUT1);
+        iList.add(INVOICE_OUTPUT2);
+        doReturn(iList).when(invoiceClient).getAllInvoices();
+
+        //get all by customer id
+        List<Invoice> customerList = new ArrayList<>();
+        customerList.add(INVOICE_OUTPUT3);
+        doReturn(customerList).when(invoiceClient).getInvoicesByCustomerId(3);
+    }
+
+
+    //CUSTOMER SERVICE
     @Test
     public void createGetUpdateCustomer() {
         CustomerViewModel cvm = sl.createCustomer(CVM_INPUT1);
@@ -212,6 +241,8 @@ public class ServiceLayerTest {
         assertEquals(cvmList.size(), 2);
     }
 
+
+    //PRODUCT SERVICE
     @Test
     public void createGetUpdateProduct() {
         ProductViewModel pvm = sl.createProduct(PVM_INPUT1);
@@ -250,6 +281,8 @@ public class ServiceLayerTest {
         assertEquals(pvmList.size(), 2);
     }
 
+
+    //LEVEL UP SERVICE
     @Test
     public void createGetUpdateLevelUp() {
         LevelUpViewModel lvm = sl.createLevelUp(LVM_INPUT1);
@@ -298,6 +331,7 @@ public class ServiceLayerTest {
     }
 
 
+    //INVENTORY SERVICE
     @Test
     public void createGetUpdateInventory() {
         InventoryViewModel ivm = sl.createInventory(INVENTORYVM_INPUT1);
@@ -321,7 +355,6 @@ public class ServiceLayerTest {
     }
 
 
-
     @Test(expected = NullPointerException.class)
     public void deleteInventory() {
         sl.deleteInventory(10);
@@ -340,5 +373,23 @@ public class ServiceLayerTest {
         List<InventoryViewModel> ivmList = sl.getAllInventoryByProductId(3);
         assertEquals(ivmList.size(), 1);
     }
+
+
+    //INVOICE SERVICE
+    @Test
+    public void getInvoice() {
+
+    }
+
+    @Test
+    public void getAllInvoices() {
+
+    }
+
+    @Test
+    public void getAllInvoicesByCustomerId() {
+
+    }
+
 
 }
