@@ -1,4 +1,4 @@
 # CloudNativeGameStore
 Built By:
-Sandy Yeung
+Sandy Yeung &&
 Fahad Hilmi
