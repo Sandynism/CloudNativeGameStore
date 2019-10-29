@@ -4,8 +4,7 @@ Cloud Native Game Store is a set of REST APIs that will support both web and mob
 
 ![](screenshots/cloud-native-design.png)
 
-
-### Built with:
+## Technologies used:
 * Java
 * Spring Boot
 * JdbcTemplate
@@ -19,3 +18,6 @@ Cloud Native Game Store is a set of REST APIs that will support both web and mob
 * Swagger
 * Spring Security
 * Jenkins
+
+## Built with:
+* IntelliJ Idea
